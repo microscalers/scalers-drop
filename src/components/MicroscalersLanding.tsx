@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cpu, Shield, DollarSign, Zap, Server, CheckCircle2, ArrowRight, Users, Twitter, X, Activity, Brain, Award, Globe } from 'lucide-react';
+import { Cpu, Shield, DollarSign, Zap, Server, CheckCircle2, ArrowRight, Users, Twitter, X, Activity, Award } from 'lucide-react';
 import { GPUClusterVisual, ServerRigVisual, BlockchainTrustVisual, MonaiMRIVisual, CommunityNetworkVisual, MembershipCardVisual } from './visuals';
 
 const MicroscalersLanding = () => {

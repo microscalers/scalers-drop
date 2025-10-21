@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { Users, Globe, Shield, Zap, DollarSign } from 'lucide-react';
 

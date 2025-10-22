@@ -1,7 +1,7 @@
-import MicroscalersLanding from './components/MicroscalersLanding'
+import { TerminalLanding } from './components/terminal/TerminalLanding'
 
 function App() {
-  return <MicroscalersLanding />
+  return <TerminalLanding />
 }
 
 export default App

@@ -1,13 +1,398 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>scalers-drop</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>microscalers.ai - trusted compute brokerage</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --bg: #000;
+      --text: #fff;
+      --secondary: #888;
+      --panel: #0a0a0a;
+      --panel-border: #1a1a1a;
+      --web3-glow: #00ff88;
+    }
+    
+    body {
+      background: #000;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      line-height: 1.4;
+      font-size: 15px;
+    }
+    
+    .container {
+      max-width: 85ch;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    
+    .logo {
+      font-size: 14px;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+      white-space: pre;
+      font-weight: 600;
+      text-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+    }
+    
+    header {
+      margin-bottom: 4rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--panel-border);
+    }
+    
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+    }
+    
+    .cursor {
+      display: inline-block;
+      width: 12px;
+      height: 20px;
+      background: var(--web3-glow);
+      margin-left: 4px;
+      animation: blink 1s step-end infinite;
+      box-shadow: 0 0 10px var(--web3-glow);
+    }
+    
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    .tagline {
+      color: var(--secondary);
+      font-size: 15px;
+      text-transform: lowercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+    }
+    
+    .panel {
+      background: var(--panel);
+      border: 2px solid var(--panel-border);
+      padding: 2.5rem;
+      margin-bottom: 3rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    .panel:hover {
+      border-color: rgba(0, 255, 136, 0.3);
+    }
+    
+    .panel-header {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--web3-glow);
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--panel-border);
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-item {
+      text-align: left;
+    }
+    
+    .stat-value {
+      font-size: 42px;
+      font-weight: 900;
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      letter-spacing: -0.02em;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+    
+    .log {
+      font-size: 14px;
+      line-height: 2;
+      color: var(--secondary);
+    }
+    
+    .log-line {
+      margin-bottom: 0.75rem;
+      opacity: 0;
+      animation: fadeIn 0.4s forwards;
+      padding-left: 1.5rem;
+      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .log-line:hover {
+      border-left-color: var(--web3-glow);
+      color: var(--text);
+      padding-left: 2rem;
+    }
+    
+    .log-line:nth-child(1) { animation-delay: 0.1s; }
+    .log-line:nth-child(2) { animation-delay: 0.2s; }
+    .log-line:nth-child(3) { animation-delay: 0.3s; }
+    .log-line:nth-child(4) { animation-delay: 0.4s; }
+    .log-line:nth-child(5) { animation-delay: 0.5s; }
+    
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    
+    .log-prefix {
+      color: var(--web3-glow);
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 1.25rem 2.5rem;
+      background: transparent;
+      border: 3px solid var(--text);
+      color: var(--text);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      font-family: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-right: 1.5rem;
+      margin-top: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--web3-glow);
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+    
+    .btn:hover {
+      color: #000;
+      border-color: var(--web3-glow);
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+    }
+    
+    .btn:hover::before {
+      left: 0;
+    }
+    
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2.5rem;
+      margin-top: 2.5rem;
+    }
+    
+    .feature {
+      padding: 1.75rem;
+      border-left: 4px solid var(--panel-border);
+      transition: all 0.3s ease;
+    }
+    
+    .feature:hover {
+      border-left-color: var(--web3-glow);
+      padding-left: 2rem;
+    }
+    
+    .feature-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    
+    .feature-desc {
+      font-size: 14px;
+      color: var(--secondary);
+      line-height: 1.7;
+      font-weight: 500;
+    }
+    
+    footer {
+      margin-top: 6rem;
+      padding-top: 3rem;
+      border-top: 2px solid var(--panel-border);
+      font-size: 12px;
+      color: var(--secondary);
+      text-align: center;
+    }
+    
+    a {
+      color: var(--web3-glow);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    a:hover {
+      border-bottom-color: var(--web3-glow);
+      text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+    }
+    
+    .terminal-prompt {
+      color: var(--web3-glow);
+      margin-right: 0.75rem;
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    }
+    
+    @media (max-width: 640px) {
+      .container {
+        padding: 2rem 1rem;
+      }
+      
+      h1 {
+        font-size: 18px;
+      }
+      
+      .stats {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .stat-value {
+        font-size: 36px;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+      }
+      
+      .btn {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      
+      .logo {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <pre class="logo">    /\_/\
+   ( -.- )  [accessing blockchain...]
+    > ^ 
+  ──────────────────────────</pre>
+      <h1>MICROSCALERS.AI<span class="cursor"></span></h1>
+      <p class="tagline">industrial-grade gpu infrastructure. ens-verified. base l2 escrow.</p>
+    </header>
+    
+    <div class="panel">
+      <div class="panel-header">$ MICROSCALERS --STATUS</div>
+      <div class="stats">
+        <div class="stat-item">
+          <span class="stat-value">32</span>
+          <span class="stat-label">R 5090 RIGS</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">265+</span>
+          <span class="stat-label">VERIFIED SCALERS</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">128GB</span>
+          <span class="stat-label">VRAM CLUSTER</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header">NETWORK LOG</div>
+      <div class="log">
+        <div class="log-line"><span class="log-prefix">></span> blockchain_verified: every provider verified on-chain. trustcall oracle escrow.</div>
+        <div class="log-line"><span class="log-prefix">></span> high_perf_hardware: rtx 5090 gpus. 7950x cpus. nvme arrays. 10gb/s networking.</div>
+        <div class="log-line"><span class="log-prefix">></span> instant_provisioning: docker/k8s ready. deepspeed support. cuda 12.4 optimized.</div>
+        <div class="log-line"><span class="log-prefix">></span> peer_to_peer: zero custody. funds locked in escrow. auto-release via chainlink.</div>
+        <div class="log-line"><span class="log-prefix">></span> ens_subdomain: join scalers → get username.microscaler.eth</div>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header">HOW IT WORKS</div>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-title">1. DEPOSIT</div>
+          <div class="feature-desc">fund account with usdc. $100 max. non-custodial wallet contract.</div>
+        </div>
+        <div class="feature">
+          <div class="feature-title">2. RENT</div>
+          <div class="feature-desc">browse verified providers. lock funds in smart contract escrow.</div>
+        </div>
+        <div class="feature">
+          <div class="feature-title">3. COMPUTE</div>
+          <div class="feature-desc">job runs. chainlink monitors. auto-release after duration.</div>
+        </div>
+        <div class="feature">
+          <div class="feature-title">4. SETTLE</div>
+          <div class="feature-desc">provider paid on-chain. 30-day dispute window. zero middleman.</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header">GET STARTED</div>
+      <p style="color: var(--secondary); font-size: 14px; margin-bottom: 1.5rem; font-weight: 600;">
+        <span class="terminal-prompt">$</span>dig microscaler.eth
+      </p>
+      <p style="color: var(--secondary); font-size: 14px; line-height: 1.9; margin-bottom: 2rem; font-weight: 500;">
+        members_get_ens_subdomain<br>
+        join scalers → get username.microscaler.eth<br>
+        deposit usdc → rent hardware → funds held in escrow → auto-release on completion
+      </p>
+      <a href="https://app.microscalers.ai/join" class="btn">JOIN SCALERS() → $29_USDC</a>
+      <a href="https://app.microscalers.ai/provide" class="btn">PROVIDE COMPUTE()</a>
+    </div>
+    
+    <footer>
+      <p>microscalers.ai // base l2 escrow // ens-verified // <a href="https://docs.microscalers.ai">docs</a> // <a href="https://github.com/microscalers">github</a></p>
+      <p style="margin-top: 1rem; font-weight: 600;">0x0c259...dE53 [disconnect]</p>
+    </footer>
+  </div>
+</body>
 </html>

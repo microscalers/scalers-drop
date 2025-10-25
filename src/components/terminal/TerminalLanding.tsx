@@ -42,7 +42,7 @@ export function TerminalLanding() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mt-12 p-6 border border-green-900">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12 p-6 border border-green-900">
           <div>
             <div className="text-3xl font-bold text-green-400">32</div>
             <div className="text-sm text-green-600">RTX_5090_RIGS</div>
@@ -58,7 +58,7 @@ export function TerminalLanding() {
         </div>
 
         {/* Features */}
-        <div className="mt-12 grid grid-cols-3 gap-6">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="border border-green-900 p-6">
             <Shield className="w-8 h-8 mb-4 text-green-400" />
             <h3 className="text-lg font-bold mb-2">BLOCKCHAIN_VERIFIED</h3>

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAccount, useSwitchChain, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { parseUnits, type Address } from 'viem'
 import { base } from 'wagmi/chains'
-// import { X } from 'lucide-react'
+import { validateSubdomain, normalizeSubdomain, getFullENS } from '../../utils/ens'
 
 const USDC_BASE = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Address
 const SCALERS_CONTRACT = '0xA3d27eAD71d65059576B796d9AE45f06E21056a2' as Address
@@ -13,18 +13,84 @@ const SCALERS_ABI = [{ name: 'joinScalers', type: 'function', stateMutability: '
 export function ScalersPayment({ onClose }: { onClose: () => void }) {
   const [subdomain, setSubdomain] = useState('')
   const [step, setStep] = useState<'input' | 'approve' | 'join' | 'success'>('input')
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   
   const { address, chain } = useAccount()
   const { switchChain } = useSwitchChain()
-  const { writeContract: approveUSDC, data: approveHash, isPending: isApproving } = useWriteContract()
-  const { writeContract: joinScalers, data: joinHash, isPending: isJoining } = useWriteContract()
+  const { writeContract: approveUSDC, data: approveHash, isPending: isApproving, error: approveError } = useWriteContract()
+  const { writeContract: joinScalers, data: joinHash, isPending: isJoining, error: joinError } = useWriteContract()
   const { isSuccess: approveSuccess } = useWaitForTransactionReceipt({ hash: approveHash })
   const { isSuccess: joinSuccess } = useWaitForTransactionReceipt({ hash: joinHash })
 
+  const handleSubdomainChange = useCallback((value: string) => {
+    const normalized = normalizeSubdomain(value)
+    setSubdomain(normalized)
+    setError(null)
+  }, [])
+
+  const handleApprove = useCallback(async () => {
+    if (!validateSubdomain(subdomain)) {
+      setError('Subdomain must be 3-32 characters, lowercase letters, numbers, and hyphens only')
+      return
+    }
+    
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await approveUSDC({
+        address: USDC_BASE,
+        abi: USDC_ABI,
+        functionName: 'approve',
+        args: [SCALERS_CONTRACT, parseUnits('29', 6)],
+        chainId: base.id,
+      })
+    } catch (err) {
+      setError('Failed to approve USDC. Please try again.')
+      setIsLoading(false)
+    }
+  }, [subdomain, approveUSDC])
+
+  const handleJoin = useCallback(async () => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await joinScalers({
+        address: SCALERS_CONTRACT,
+        abi: SCALERS_ABI,
+        functionName: 'joinScalers',
+        args: [subdomain],
+        chainId: base.id,
+      })
+    } catch (err) {
+      setError('Failed to join Scalers. Please try again.')
+      setIsLoading(false)
+    }
+  }, [subdomain, joinScalers])
+
   useEffect(() => {
-    if (approveSuccess && step === 'approve') setStep('join')
-    if (joinSuccess && step === 'join') setStep('success')
+    if (approveSuccess && step === 'approve') {
+      setStep('join')
+      setIsLoading(false)
+    }
+    if (joinSuccess && step === 'join') {
+      setStep('success')
+      setIsLoading(false)
+    }
   }, [approveSuccess, joinSuccess, step])
+
+  useEffect(() => {
+    if (approveError) {
+      setError('Approval failed. Please try again.')
+      setIsLoading(false)
+    }
+    if (joinError) {
+      setError('Join failed. Please try again.')
+      setIsLoading(false)
+    }
+  }, [approveError, joinError])
 
   if (chain?.id !== base.id) {
     return (
@@ -50,7 +116,7 @@ export function ScalersPayment({ onClose }: { onClose: () => void }) {
           <div className="text-6xl mb-4">✓</div>
           <h2 className="text-2xl text-green-400 mb-4">WELCOME_SCALER</h2>
           <div className="bg-green-950 p-4 mb-4">
-            <div className="text-green-400">{subdomain}.microscaler.eth</div>
+            <div className="text-green-400">{getFullENS(subdomain)}</div>
           </div>
           <button onClick={onClose} className="px-6 py-3 border border-green-600 hover:bg-green-900">
             CONTINUE()
@@ -67,6 +133,12 @@ export function ScalersPayment({ onClose }: { onClose: () => void }) {
         
         <h2 className="text-2xl text-green-400 mb-6">JOIN_SCALERS()</h2>
         
+        {error && (
+          <div className="text-red-400 text-sm mb-4 p-2 bg-red-950 border border-red-600">
+            {error}
+          </div>
+        )}
+        
         {step === 'input' && (
           <>
             <div className="mb-6">
@@ -75,7 +147,7 @@ export function ScalersPayment({ onClose }: { onClose: () => void }) {
                 <input
                   type="text"
                   value={subdomain}
-                  onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                  onChange={(e) => handleSubdomainChange(e.target.value)}
                   placeholder="dev"
                   className="flex-1 bg-black text-green-400 px-4 py-2 outline-none"
                   maxLength={32}
@@ -92,7 +164,7 @@ export function ScalersPayment({ onClose }: { onClose: () => void }) {
 
             <button
               onClick={() => setStep('approve')}
-              disabled={!subdomain || subdomain.length < 3}
+              disabled={!validateSubdomain(subdomain)}
               className="w-full px-6 py-3 bg-green-600 text-black font-bold hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               CONTINUE() →
@@ -102,33 +174,21 @@ export function ScalersPayment({ onClose }: { onClose: () => void }) {
 
         {step === 'approve' && (
           <button
-            onClick={() => approveUSDC({
-              address: USDC_BASE,
-              abi: USDC_ABI,
-              functionName: 'approve',
-              args: [SCALERS_CONTRACT, parseUnits('29', 6)],
-              chainId: base.id,
-            })}
-            disabled={isApproving}
-            className="w-full px-6 py-3 bg-green-600 text-black font-bold hover:bg-green-500"
+            onClick={handleApprove}
+            disabled={isApproving || isLoading}
+            className="w-full px-6 py-3 bg-green-600 text-black font-bold hover:bg-green-500 disabled:opacity-50"
           >
-            {isApproving ? 'APPROVING...' : '1. APPROVE_USDC()'}
+            {isApproving || isLoading ? 'APPROVING...' : '1. APPROVE_USDC()'}
           </button>
         )}
 
         {step === 'join' && (
           <button
-            onClick={() => joinScalers({
-              address: SCALERS_CONTRACT,
-              abi: SCALERS_ABI,
-              functionName: 'joinScalers',
-              args: [subdomain],
-              chainId: base.id,
-            })}
-            disabled={isJoining}
-            className="w-full px-6 py-3 bg-green-600 text-black font-bold hover:bg-green-500"
+            onClick={handleJoin}
+            disabled={isJoining || isLoading}
+            className="w-full px-6 py-3 bg-green-600 text-black font-bold hover:bg-green-500 disabled:opacity-50"
           >
-            {isJoining ? 'JOINING...' : '2. JOIN_SCALERS()'}
+            {isJoining || isLoading ? 'JOINING...' : '2. JOIN_SCALERS()'}
           </button>
         )}
       </div>

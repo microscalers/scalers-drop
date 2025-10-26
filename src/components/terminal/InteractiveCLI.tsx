@@ -337,33 +337,38 @@ curl -s https://api.microscalers.ai/cli?cmd=join
       ))}
 
       {!booting && (
-        <form onSubmit={handleSubmit}>
-          <span style={{ color: "#00FF99" }}>$ </span>
-          <input
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            disabled={isSwitching}
-            style={{
-              background: "transparent",
-              border: "none",
-              outline: "none",
-              color: "#FFFFFF",
-              fontFamily: "inherit",
-              fontSize: "18px",
-              width: "80%",
-            }}
-          />
-          <span
-            style={{
-              opacity: cursorVisible ? 1 : 0,
-              color: "#00FF99",
-              fontWeight: "bold",
-            }}
-          >
-            █
-          </span>
-        </form>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <form onSubmit={handleSubmit} style={{ display: "inline-flex", alignItems: "baseline" }}>
+            <span style={{ color: "#00FF99" }}>$</span>
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={isSwitching}
+              style={{
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                color: "#FFFFFF",
+                fontFamily: "inherit",
+                fontSize: "18px",
+                maxWidth: "80%",
+                marginLeft: "0.5rem",
+              }}
+              aria-label="CLI input"
+            />
+            <span
+              style={{
+                opacity: cursorVisible ? 1 : 0,
+                color: "#00FF99",
+                fontWeight: "bold",
+                marginLeft: "0.25rem",
+              }}
+            >
+              █
+            </span>
+          </form>
+        </div>
       )}
     </div>
   )

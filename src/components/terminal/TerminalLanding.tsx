@@ -1,4 +1,3 @@
-const [showPayment, setShowPayment] = useState(false)
 import React, { useState } from 'react'
 import { InteractiveCLI } from './InteractiveCLI'
 import { WalletConnect } from '../wallet/WalletConnect'

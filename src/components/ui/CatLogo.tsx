@@ -1,4 +1,4 @@
-import React from 'react'
+
 
 interface CatLogoProps {
   size?: 'sm' | 'md' | 'lg'

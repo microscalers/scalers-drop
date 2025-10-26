@@ -1,4 +1,4 @@
-import { normalize } from 'viem/ens'
+
 
 export function validateSubdomain(subdomain: string): boolean {
   if (!subdomain || subdomain.length < 3) return false

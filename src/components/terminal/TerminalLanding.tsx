@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Terminal, Cpu, Shield, Zap } from 'lucide-react'
-import { WalletConnect } from '../wallet/WalletConnect'
 import { ScalersPayment } from '../wallet/ScalersPayment'
+import WalletConnect from '@/components/ui/WalletConnect'
 
 export function TerminalLanding() {
   const [showPayment, setShowPayment] = useState(false)

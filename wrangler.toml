@@ -1,0 +1,9 @@
+name = "scalers-drop"
+compatibility_date = "2025-10-26"
+
+# Cloudflare Pages output directory
+pages_build_output_dir = "dist"
+
+[vars]
+PROJECT = "SCALERS"
+ENVIRONMENT = "production"

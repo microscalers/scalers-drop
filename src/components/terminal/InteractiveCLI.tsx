@@ -81,7 +81,7 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
     "| |  | | | | | | | | |_) | |  __/\\__ \\__ \\  __/| |  | |_",
     "|_|  |_|_|_| |_| |_| .__/|_|\\___||___/___/\\___||_|   \\__|",
     "                   |_|",
-    "        microscalers.eth  —  trusted compute brokerage",
+    "        MICROSCALERS.AI  —  trusted compute brokerage",
     "",
     "→ docs.microscalers.eth.limo",
     "→ members.microscalers.eth.limo", 

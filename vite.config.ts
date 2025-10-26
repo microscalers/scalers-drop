@@ -11,5 +11,14 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
-  },
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Suppress warnings about PURE comments in ox library
+        if (warning.message && warning.message.includes('/*#__PURE__*/')) {
+          return
+        }
+        warn(warning)
+      }
+    }
+  }
 })

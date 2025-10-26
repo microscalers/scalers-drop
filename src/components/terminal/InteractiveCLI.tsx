@@ -9,6 +9,8 @@ export type InteractiveCLIProps = {
 type CliLine = {
   id: number
   text: string
+  isTyping?: boolean
+  displayText?: string
 }
 
 export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
@@ -19,13 +21,15 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
 
   const [input, setInput] = useState('')
   const [lines, setLines] = useState<CliLine[]>(() => [
-    { id: 1, text: 'Microscalers CLI v0.1.0 — type "help"' },
+    { id: 1, text: 'Microscalers CLI v0.1.0 — type "help"', isTyping: true, displayText: '' },
   ])
   const [history, setHistory] = useState<string[]>([])
   const [historyIdx, setHistoryIdx] = useState<number | null>(null)
+  const [isTyping, setIsTyping] = useState(true)
   const nextId = useRef(2)
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const prompt = useMemo(() => {
     const who = isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'guest'
@@ -33,13 +37,59 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
     return `${who}@${net}`
   }, [isConnected, address, chain?.name])
 
-  const appendLines = useCallback((newLines: string | string[]) => {
+  const appendLines = useCallback((newLines: string | string[], shouldAnimate = true) => {
     const arr = Array.isArray(newLines) ? newLines : [newLines]
-    setLines(prev => [
-      ...prev,
-      ...arr.map(text => ({ id: nextId.current++, text })),
-    ])
+    const newLineObjects = arr.map(text => ({ 
+      id: nextId.current++, 
+      text, 
+      isTyping: shouldAnimate,
+      displayText: shouldAnimate ? '' : text
+    }))
+    
+    setLines(prev => [...prev, ...newLineObjects])
+    
+    if (shouldAnimate) {
+      setIsTyping(true)
+    }
   }, [])
+
+  // Typing animation effect
+  useEffect(() => {
+    if (!isTyping) return
+
+    const typingLines = lines.filter(line => line.isTyping && line.displayText !== line.text)
+    if (typingLines.length === 0) {
+      setIsTyping(false)
+      return
+    }
+
+    const currentLine = typingLines[0]
+    const currentLength = currentLine.displayText?.length || 0
+    const targetText = currentLine.text
+
+    if (currentLength < targetText.length) {
+      typingTimeoutRef.current = setTimeout(() => {
+        setLines(prev => prev.map(line => 
+          line.id === currentLine.id 
+            ? { ...line, displayText: targetText.slice(0, currentLength + 1) }
+            : line
+        ))
+      }, Math.random() * 50 + 20) // Random delay between 20-70ms for realistic typing
+    } else {
+      // This line is done typing
+      setLines(prev => prev.map(line => 
+        line.id === currentLine.id 
+          ? { ...line, isTyping: false, displayText: targetText }
+          : line
+      ))
+    }
+
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
+    }
+  }, [lines, isTyping])
 
   const printHelp = useCallback(() => {
     appendLines([
@@ -96,7 +146,7 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
 
     setHistory(prev => [...prev, cmd])
     setHistoryIdx(null)
-    appendLines(`$ ${cmd}`)
+    appendLines(`$ ${cmd}`, false) // Don't animate the command input
 
     if (cmd === 'help') {
       printHelp()
@@ -191,6 +241,15 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
     }
   }, [connectStatus, connectError, appendLines])
 
+  // Cleanup typing timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
+    }
+  }, [])
+
   return (
     <div style={{
       border: "1px solid #00FF99",
@@ -200,6 +259,12 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
       width: "100%",
       maxWidth: "800px"
     }}>
+      <style>{`
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+      `}</style>
       <div 
         ref={scrollRef} 
         style={{
@@ -214,7 +279,16 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
       >
         {lines.map(line => (
           <div key={line.id} style={{ whiteSpace: "pre-wrap", marginBottom: "0.25rem" }}>
-            {line.text}
+            {line.displayText || line.text}
+            {line.isTyping && (
+              <span style={{ 
+                animation: "blink 1s infinite",
+                color: "#00FF99",
+                fontWeight: "bold"
+              }}>
+                _
+              </span>
+            )}
           </div>
         ))}
       </div>

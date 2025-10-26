@@ -28,7 +28,6 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
   const terminalRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Boot-sequence lines
   const bootLines = [
     "[ booting microscalers node... ]",
     "[ connecting to Base L2... ok ✅ ]",
@@ -36,28 +35,25 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
     "Welcome to Microscalers CLI — type `help` to begin.",
   ]
 
-  // Typewriter effect for boot sequence
   useEffect(() => {
     let idx = 0
-    const interval = setInterval(() => {
+    const t = setInterval(() => {
       if (idx < bootLines.length) {
         setHistory((h) => [...h, bootLines[idx]])
         idx++
       } else {
-        clearInterval(interval)
+        clearInterval(t)
         setBooting(false)
       }
     }, 900)
-    return () => clearInterval(interval)
+    return () => clearInterval(t)
   }, [])
 
-  // blinking cursor
   useEffect(() => {
     const t = setInterval(() => setCursorVisible((v) => !v), 500)
     return () => clearInterval(t)
   }, [])
 
-  // auto scroll
   useEffect(() => {
     terminalRef.current?.scrollTo(0, terminalRef.current.scrollHeight)
   }, [history])
@@ -134,7 +130,7 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
         break
       case "status":
         output =
-          "Rigs: 32 • Scalers: 265+ • VRAM: 128 GB cluster • Network: Base L2"
+          "Rigs 32 • Scalers 265+ • VRAM 128 GB cluster • Network Base L2"
         break
       case "connect":
         void handleConnect()
@@ -154,7 +150,7 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
         handleSwitchBase()
         return
       case "version":
-        output = "Microscalers CLI v1.1.0"
+        output = "Microscalers CLI v1.1.1"
         break
       case "clear":
         setHistory([])
@@ -186,15 +182,17 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
   return (
     <div
       style={{
-        width: "80%",
-        maxWidth: "900px",
-        minHeight: "260px",
-        backgroundColor: "#0a0a0a",
-        color: "#00FF99",
+        width: "90%",
+        maxWidth: "1000px",
+        minHeight: "300px",
+        backgroundColor: "#000",
+        color: "#FFFFFF",
         border: "1px solid #00FF99",
         borderRadius: "8px",
-        padding: "1rem",
+        padding: "2rem",
         fontFamily: "JetBrains Mono, monospace",
+        fontSize: "18px",
+        lineHeight: 1.6,
         overflowY: "auto",
       }}
       ref={terminalRef}
@@ -206,33 +204,35 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
         </pre>
       ))}
 
-      <form onSubmit={handleSubmit}>
-        <span>$ </span>
-        <input
-          ref={inputRef}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={booting || isSwitching}
-          style={{
-            background: "transparent",
-            border: "none",
-            outline: "none",
-            color: "#00FF99",
-            fontFamily: "inherit",
-            fontSize: "1rem",
-            width: "80%",
-          }}
-        />
-        <span
-          style={{
-            opacity: cursorVisible ? 1 : 0,
-            color: "#00FF99",
-            fontWeight: "bold",
-          }}
-        >
-          █
-        </span>
-      </form>
+      {!booting && (
+        <form onSubmit={handleSubmit}>
+          <span style={{ color: "#00FF99" }}>$ </span>
+          <input
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={isSwitching}
+            style={{
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              color: "#FFFFFF",
+              fontFamily: "inherit",
+              fontSize: "18px",
+              width: "80%",
+            }}
+          />
+          <span
+            style={{
+              opacity: cursorVisible ? 1 : 0,
+              color: "#00FF99",
+              fontWeight: "bold",
+            }}
+          >
+            █
+          </span>
+        </form>
+      )}
     </div>
   )
 }

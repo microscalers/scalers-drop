@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Terminal, Cpu, Shield, Zap } from 'lucide-react'
 import { WalletConnect } from '../wallet/WalletConnect'
 import { ScalersPayment } from '../wallet/ScalersPayment'
+import { InteractiveCLI } from './InteractiveCLI'
 
 export function TerminalLanding() {
   const [showPayment, setShowPayment] = useState(false)
@@ -22,6 +23,9 @@ export function TerminalLanding() {
       {/* Hero */}
       <main className="max-w-7xl mx-auto p-8">
         <div className="py-12">
+          <div className="mb-6">
+            <InteractiveCLI onJoin={() => setShowPayment(true)} />
+          </div>
           <div className="text-sm text-green-600 mb-2">$ ./microscalers --status</div>
           <h1 className="text-5xl font-bold mb-4">Trusted Compute Brokerage</h1>
           <p className="text-xl text-green-300 mb-8">

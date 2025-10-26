@@ -82,11 +82,22 @@ export function TerminalLanding() {
           </p>
         </div>
 
-        {/* Footer Build ID */}
-        <footer className="mt-8 text-green-700 text-xs text-center border-t border-green-900 pt-4">
-          build: {import.meta.env.VITE_COMMIT_HASH || 'local-dev'}
-        </footer>
-      </main>
-    </div>
-  )
-}
+{/* ===== BUILD FOOTER ===== */}
+<footer
+  style={{
+    marginTop: '4rem',
+    padding: '1rem 0',
+    borderTop: '1px solid #00ff99',
+    textAlign: 'center',
+    fontFamily: 'JetBrains Mono, monospace',
+    fontSize: '0.85rem',
+    color: '#00ff99',
+    opacity: 0.8
+  }}
+>
+  <span>
+    microscalers.ai • build&nbsp;
+    <code>{import.meta.env.VITE_BUILD_ID || 'local-dev'}</code>&nbsp;•&nbsp;
+    deployed&nbsp;{new Date().toUTCString()}
+  </span>
+</footer>

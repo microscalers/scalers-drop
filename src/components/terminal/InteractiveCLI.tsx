@@ -17,7 +17,9 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
     // Load history from localStorage on component mount
     try {
       const saved = localStorage.getItem("cli-history")
-      return saved ? JSON.parse(saved) : []
+      const parsed = saved ? JSON.parse(saved) : []
+      // Ensure we have an array of strings
+      return Array.isArray(parsed) ? parsed.filter(item => typeof item === 'string') : []
     } catch {
       return []
     }
@@ -30,6 +32,11 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
 
   // Helper function to render colored text
   const renderColoredText = (text: string) => {
+    // Guard against undefined or null text
+    if (!text || typeof text !== 'string') {
+      return text || ''
+    }
+
     // Simple color mapping for terminal-like appearance
     const colorMap: { [key: string]: string } = {
       '→': '#00FF99', // Green for arrows
@@ -324,7 +331,7 @@ curl -s https://api.microscalers.ai/cli?cmd=join
     >
       {history.map((line, i) => (
         <pre key={i} style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-          {renderColoredText(line)}
+          {renderColoredText(line || '')}
         </pre>
       ))}
 

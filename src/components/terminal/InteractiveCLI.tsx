@@ -29,6 +29,14 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const bootLines = [
+    " __  __ _                 _                          _",
+    "|  \\/  (_)_ __ ___  _ __ | | ___  ___ ___  ___  _ __| |_",
+    "| |\\/| | | '_ ` _ \\| '_ \\| |/ _ \\/ __/ __|/ _ \\| '__| __|",
+    "| |  | | | | | | | | |_) | |  __/\\__ \\__ \\  __/| |  | |_",
+    "|_|  |_|_|_| |_| |_| .__/|_|\\___||___/___/\\___||_|   \\__|",
+    "                   |_|",
+    "        microscalers.eth  —  trusted compute brokerage",
+    "",
     "[ booting microscalers node... ]",
     "[ connecting to Base L2... ok ✅ ]",
     "[ initializing wagmi... done ]",

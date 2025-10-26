@@ -1,13 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { WagmiProvider, createConfig, http } from 'wagmi'
-import { base, mainnet } from 'wagmi/chains'
-import { injected } from 'wagmi/connectors'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { TerminalLanding } from './components/terminal/TerminalLanding'
-import './index.css'
+import { WagmiProvider } from 'wagmi'
+import { base, mainnet } from 'wagmi/chains'
+import { http, createConfig, injected } from 'wagmi'
+import App from './App'
 
-// === wagmi + react-query setup ===
 const config = createConfig({
   chains: [base, mainnet],
   connectors: [injected()],
@@ -19,12 +17,11 @@ const config = createConfig({
 
 const queryClient = new QueryClient()
 
-// === render microscalers terminal app ===
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <TerminalLanding />
+        <App />
       </QueryClientProvider>
     </WagmiProvider>
   </StrictMode>,

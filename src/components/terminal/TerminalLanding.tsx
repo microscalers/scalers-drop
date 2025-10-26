@@ -1,7 +1,9 @@
 'use client'
 import { useState } from 'react'
-import { Terminal, Cpu, Shield, Zap } from 'lucide-react'
-import WalletConnect from '@/components/ui/WalletConnect'
+import { Terminal } from 'lucide-react'
+import { WalletConnect } from '../wallet/WalletConnect'
+import { ScalersPayment } from '../wallet/ScalersPayment'
+import { InteractiveCLI } from './InteractiveCLI'
 
 export function TerminalLanding() {
   const [showPayment, setShowPayment] = useState(false)
@@ -22,43 +24,36 @@ export function TerminalLanding() {
       </header>
 
       {/* Hero */}
-      <main className="max-w-7xl mx-auto p-8 text-green-400">
-        <div className="py-12 text-center">
+      <main className="max-w-7xl mx-auto p-8">
+        <div className="py-12">
+          {/* CLI block */}
+          <div className="mb-6">
+            <InteractiveCLI onJoin={() => setShowPayment(true)} />
+          </div>
+
           <div className="text-sm text-green-600 mb-2">$ ./microscalers --status</div>
           <h1 className="text-5xl font-bold mb-4">Trusted Compute Brokerage</h1>
           <p className="text-xl text-green-300 mb-8">
             Industrial-grade GPU infrastructure. ENS-verified. Base L2 escrow.
           </p>
 
-          <div className="flex justify-center gap-4">
+          {/* CTA */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="https://members.microscalers.eth.limo"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 bg-green-600 hover:bg-green-500 text-black font-bold border border-green-700"
+              className="px-6 py-3 bg-green-600 hover:bg-green-500 text-black font-bold border border-green-700 text-center"
             >
               JOIN_SCALERS() → $29_USDC
             </a>
-            <a
-              href="https://workers.microscalers.eth.limo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 border border-green-600 hover:bg-green-900 font-bold"
-            >
+            <button className="px-6 py-3 border border-green-600 hover:bg-green-900">
               PROVIDE_COMPUTE()
-            </a>
+            </button>
           </div>
 
-          {/* quicklinks */}
-          <div className="flex justify-center gap-6 mt-8 text-sm text-green-500">
-            <a
-              href="https://docs.microscalers.eth.limo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-green-400 underline"
-            >
-              DOCS
-            </a>
+          {/* Quick links */}
+          <div className="mt-8 flex justify-center gap-8 text-sm">
             <a
               href="https://workers.microscalers.eth.limo"
               target="_blank"
@@ -94,7 +89,7 @@ export function TerminalLanding() {
           </div>
         </div>
 
-        {/* Network Log */}
+        {/* Network log */}
         <div className="mt-12 border border-green-900 p-6 text-left">
           <h3 className="text-green-400 text-lg font-bold mb-4">NETWORK_LOG</h3>
           <p className="text-sm text-green-600 leading-relaxed">
@@ -110,6 +105,9 @@ export function TerminalLanding() {
           </p>
         </div>
       </main>
+
+      {/* Payment modal */}
+      {showPayment && <ScalersPayment onClose={() => setShowPayment(false)} />}
     </div>
   )
 }

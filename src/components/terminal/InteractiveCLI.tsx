@@ -155,7 +155,7 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
     switch (clean) {
       case "help":
         output =
-          "Available commands:\nhelp, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, clear-history, version\n\nPortal commands:\nopen docs, open members, open dev, open ens\n\nAPI commands:\napi, curl, quickstart"
+          "Available commands:\nhelp, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, clear-history, version\n\nPortal commands:\nopen docs, open members, open dev, open ens\n\nAPI commands:\napi, curl, quickstart, api-cli"
         break
       case "join":
         output = "→ Opening membership flow ($29 USDC)..."
@@ -269,6 +269,19 @@ curl -s https://api.microscalers.eth.limo/v1/status | jq .
 curl -s https://api.microscalers.eth.limo/v1/rigs | jq '.rigs[] | {id, gpu_type, status, price_per_hour}'
 
 Ready to build! 🚀`
+        break
+      case "api-cli":
+        output = `# Microscalers CLI API (Cloudflare Worker):
+curl -s https://api.microscalers.ai/cli?cmd=help
+
+# Available commands:
+curl -s https://api.microscalers.ai/cli?cmd=docs
+curl -s https://api.microscalers.ai/cli?cmd=members
+curl -s https://api.microscalers.ai/cli?cmd=dev
+curl -s https://api.microscalers.ai/cli?cmd=blocks
+curl -s https://api.microscalers.ai/cli?cmd=join
+
+# Works with any terminal or browser!`
         break
       default:
         output = `Command not found: ${cmd}`

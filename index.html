@@ -1,12 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>microscalers.ai — trusted compute brokerage</title>
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAT — trusted compute brokerage</title>
+
+  <!-- Terminal-grade, ASCII-safe styles -->
+  <style>
+    :root{
+      --bg:#000;
+      --fg:#00ff66;
+      --fg-dim:#00aa55;
+      --banner:#00ff66;
+      --banner-fg:#000;
+    }
+    html,body{
+      margin:0; padding:0;
+      background:var(--bg); color:var(--fg);
+      font-family:"JetBrains Mono","Fira Code","Cascadia Mono","Menlo","Consolas",monospace;
+      font-size:15px; line-height:1.1;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    .banner{
+      background:var(--banner); color:var(--banner-fg);
+      text-align:center; padding:4px 0; font-weight:700; border-bottom:1px solid var(--banner);
+    }
+    .box{
+      max-width:920px; margin:2rem auto; padding:2rem;
+      border:1px solid var(--fg); border-radius:12px;
+      box-shadow:0 0 24px rgba(0,255,102,.12);
+    }
+    pre{white-space:pre; margin:0}
+    .ascii{ color:var(--fg); font-size:14px; margin-bottom:1.25rem; }
+    a{ color:var(--fg); text-decoration:none }
+    a:hover{ color:#fff; text-shadow:0 0 6px var(--fg) }
+    .dim{ color:var(--fg-dim) }
+    .ok{ color:var(--fg) }
+    .cli{ margin:.35rem 0 }
+    .cursor{ display:inline-block; width:8px; height:16px; background:var(--fg); animation:blink 1s steps(1) infinite }
+    @keyframes blink{ 50%{opacity:0} }
+  </style>
+</head>
+<body>
+  <div class="banner">Base L2 Connected • Network: Base • Ready for Transactions</div>
+
+  <div class="box">
+    <!-- ASCII kept intentionally simple (pure 7-bit) to avoid glyph issues -->
+    <pre class="ascii">
+   ______   ___    ______
+  / ____/  /   |  / ____/
+ / /      / /| | / /     
+/ /___   / ___ |/ /___   
+\____/  /_/  |_|\____/   
+
+        C   A   T
+    </pre>
+
+    <p class="cli"><span class="dim">microscalers.eth</span> — trusted compute brokerage</p>
+    <p>
+      → <a href="https://docs.microscalers.eth.limo">docs.microscalers.eth.limo</a><br>
+      → <a href="https://members.microscalers.eth.limo">members.microscalers.eth.limo</a><br>
+      → <a href="https://dev.microscalers.eth.limo">dev.microscalers.eth.limo</a>
+    </p>
+
+    <p class="cli dim">[ booting cat node... ]</p>
+    <p class="cli"><span class="dim">[ connecting to Base L2... </span><span class="ok">ok ✓</span><span class="dim"> ]</span></p>
+    <p class="cli"><span class="dim">[ initializing wagmi... </span><span class="ok">done ]</span></p>
+
+    <p class="cli">Welcome to <span class="ok">CAT CLI</span> — type <span class="dim">help</span> to begin.</p>
+
+    <pre class="cli">( .. ) [ accessing blockchain... ]
+> ^ <span class="cursor"></span></pre>
+
+    <!-- React app mount (keep if you use Vite/React; safe to leave empty) -->
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  </div>
+
+  <!-- Keep Vite entry if your app mounts -->
+  <script type="module" src="/src/main.tsx"></script>
+</body>
 </html>

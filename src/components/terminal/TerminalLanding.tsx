@@ -21,13 +21,10 @@ export function TerminalLanding() {
     >
       {/* ===== HEADER ===== */}
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-        <pre style={{ color: "#00FF99", margin: 0 }}>
-{`  ^._.^ [accessing blockchain...]`}
-        </pre>
-        <h1 style={{ fontSize: "2rem", margin: "1rem 0" }}>
+        <h1 style={{ fontSize: "2rem", margin: "1rem 0", fontFamily: "JetBrains Mono, monospace" }}>
           MICROSCALE<span style={{ color: "#fff" }}>RS.AI</span>
         </h1>
-        <p style={{ opacity: 0.8 }}>
+        <p style={{ opacity: 0.8, fontFamily: "JetBrains Mono, monospace" }}>
           industrial-grade gpu infrastructure. ens-verified. base l2 escrow.
         </p>
       </div>
@@ -40,13 +37,13 @@ export function TerminalLanding() {
       {/* ===== HERO ===== */}
       <section style={{ textAlign: "center", marginBottom: "3rem", width: "100%" }}>
 
-        <div style={{ color: "#00CC66", fontSize: "0.9rem", marginBottom: "0.5rem" }}>
+        <div style={{ color: "#00CC66", fontSize: "0.9rem", marginBottom: "0.5rem", fontFamily: "JetBrains Mono, monospace" }}>
           $ ./microscalers --status
         </div>
-        <h2 style={{ fontSize: "2rem", marginBottom: "1rem" }}>
+        <h2 style={{ fontSize: "2rem", marginBottom: "1rem", fontFamily: "JetBrains Mono, monospace" }}>
           Trusted Compute Brokerage
         </h2>
-        <p style={{ fontSize: "1.1rem", opacity: 0.85, marginBottom: "2rem" }}>
+        <p style={{ fontSize: "1.1rem", opacity: 0.85, marginBottom: "2rem", fontFamily: "JetBrains Mono, monospace" }}>
           Industrial-grade GPU infrastructure. ENS-verified. Base L2 escrow.
         </p>
 
@@ -61,6 +58,7 @@ export function TerminalLanding() {
               border: "none",
               borderRadius: "6px",
               cursor: "pointer",
+              fontFamily: "JetBrains Mono, monospace",
             }}
           >
             JOIN_SCALERS() → $29_USDC
@@ -73,6 +71,7 @@ export function TerminalLanding() {
               borderRadius: "6px",
               padding: "0.8rem 1.5rem",
               cursor: "pointer",
+              fontFamily: "JetBrains Mono, monospace",
             }}
           >
             PROVIDE_COMPUTE()
@@ -93,16 +92,16 @@ export function TerminalLanding() {
         }}
       >
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "1.5rem", color: "#fff" }}>32</div>
-          <small>R5090 RIGS</small>
+          <div style={{ fontSize: "1.5rem", color: "#fff", fontFamily: "JetBrains Mono, monospace" }}>32</div>
+          <small style={{ fontFamily: "JetBrains Mono, monospace" }}>R5090 RIGS</small>
         </div>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "1.5rem", color: "#fff" }}>265+</div>
-          <small>VERIFIED SCALERS</small>
+          <div style={{ fontSize: "1.5rem", color: "#fff", fontFamily: "JetBrains Mono, monospace" }}>265+</div>
+          <small style={{ fontFamily: "JetBrains Mono, monospace" }}>VERIFIED SCALERS</small>
         </div>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "1.5rem", color: "#fff" }}>128GB</div>
-          <small>VRAM CLUSTER</small>
+          <div style={{ fontSize: "1.5rem", color: "#fff", fontFamily: "JetBrains Mono, monospace" }}>128GB</div>
+          <small style={{ fontFamily: "JetBrains Mono, monospace" }}>VRAM CLUSTER</small>
         </div>
       </section>
 
@@ -123,18 +122,19 @@ export function TerminalLanding() {
           fontSize: "0.9rem",
           opacity: 0.8,
           textAlign: "center",
+          fontFamily: "JetBrains Mono, monospace",
         }}
       >
         <p>
           $ build-id:{" "}
-          <code>{import.meta.env.VITE_BUILD_ID || "local-dev"}</code> |
+          <code style={{ fontFamily: "JetBrains Mono, monospace" }}>{import.meta.env.VITE_BUILD_ID || "local-dev"}</code> |
           deployed: {new Date().toUTCString()}
           <br />
           <a
             href="https://microscalers.eth.limo"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: "#00FF99" }}
+            style={{ color: "#00FF99", fontFamily: "JetBrains Mono, monospace" }}
           >
             microscalers.eth
           </a>{" "}
@@ -143,7 +143,7 @@ export function TerminalLanding() {
             href="https://trustcat.eth.limo"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: "#00FF99" }}
+            style={{ color: "#00FF99", fontFamily: "JetBrains Mono, monospace" }}
           >
             trustcat.eth
           </a>

@@ -32,11 +32,13 @@ export function TerminalLanding() {
         </p>
       </div>
 
+      {/* ===== INTERACTIVE CLI ===== */}
+      <section style={{ marginTop: "2rem", marginBottom: "3rem", width: "100%" }}>
+        <InteractiveCLI onJoin={() => setShowPayment(true)} />
+      </section>
+
       {/* ===== HERO ===== */}
       <section style={{ textAlign: "center", marginBottom: "3rem", width: "100%" }}>
-        <div style={{ marginBottom: "1.5rem" }}>
-          <InteractiveCLI onJoin={() => setShowPayment(true)} />
-        </div>
 
         <div style={{ color: "#00CC66", fontSize: "0.9rem", marginBottom: "0.5rem" }}>
           $ ./microscalers --status

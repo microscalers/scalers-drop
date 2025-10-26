@@ -27,65 +27,25 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
   const terminalRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const prompt = useMemo(() => {
-    const who = isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'guest'
-    const net = chain?.name ?? 'no-net'
-    return `${who}@${net}`
-  }, [isConnected, address, chain?.name])
-
-  const appendLines = useCallback((newLines: string | string[], shouldAnimate = true) => {
-    const arr = Array.isArray(newLines) ? newLines : [newLines]
-    const newLineObjects = arr.map(text => ({ 
-      id: nextId.current++, 
-      text, 
-      isTyping: shouldAnimate,
-      displayText: shouldAnimate ? '' : text
-    }))
-    
-    setLines(prev => [...prev, ...newLineObjects])
-    
-    if (shouldAnimate) {
-      setIsTyping(true)
-    }
+  // Blinking cursor effect
+  useEffect(() => {
+    const t = setInterval(() => setCursorVisible((v) => !v), 500)
+    return () => clearInterval(t)
   }, [])
 
-  // Typing animation effect
+  // Auto scroll to bottom
   useEffect(() => {
-    if (!isTyping) return
+    terminalRef.current?.scrollTo(0, terminalRef.current.scrollHeight)
+  }, [history])
 
-    const typingLines = lines.filter(line => line.isTyping && line.displayText !== line.text)
-    if (typingLines.length === 0) {
-      setIsTyping(false)
-      return
+  // Save history to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem("cli-history", JSON.stringify(history))
+    } catch (error) {
+      console.warn("Failed to save CLI history to localStorage:", error)
     }
-
-    const currentLine = typingLines[0]
-    const currentLength = currentLine.displayText?.length || 0
-    const targetText = currentLine.text
-
-    if (currentLength < targetText.length) {
-      typingTimeoutRef.current = setTimeout(() => {
-        setLines(prev => prev.map(line => 
-          line.id === currentLine.id 
-            ? { ...line, displayText: targetText.slice(0, currentLength + 1) }
-            : line
-        ))
-      }, Math.random() * 50 + 20) // Random delay between 20-70ms for realistic typing
-    } else {
-      // This line is done typing
-      setLines(prev => prev.map(line => 
-        line.id === currentLine.id 
-          ? { ...line, isTyping: false, displayText: targetText }
-          : line
-      ))
-    }
-
-    return () => {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current)
-      }
-    }
-  }, [lines, isTyping])
+  }, [history])
 
   const printHelp = useCallback(() => {
     appendLines([

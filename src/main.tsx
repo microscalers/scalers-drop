@@ -5,7 +5,7 @@ import { base, mainnet } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { injected } from 'wagmi/connectors'
 import './index.css'
-import App from './App.tsx'
+import App from "./App"
 
 const config = createConfig({
   chains: [base, mainnet],

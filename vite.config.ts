@@ -12,6 +12,16 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     rollupOptions: {
+      external: (id) => {
+        // Exclude SES lockdown from bundle
+        if (id.includes('lockdown-install') || 
+            id.includes('ses') || 
+            id.includes('@agoric/ses') ||
+            id.includes('@endo/ses')) {
+          return true
+        }
+        return false
+      },
       onwarn(warning, warn) {
         // Suppress warnings about PURE comments in ox library
         if (warning.message && warning.message.includes('/*#__PURE__*/')) {
@@ -20,5 +30,9 @@ export default defineConfig({
         warn(warning)
       }
     }
+  },
+  define: {
+    // Disable SES lockdown in browser
+    global: 'globalThis',
   }
 })

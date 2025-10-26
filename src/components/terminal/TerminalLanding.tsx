@@ -13,7 +13,7 @@ export function TerminalLanding() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Terminal className="w-6 h-6" />
-            <span className="text-xl">MICROSCALERS.AI</span>
+            <span className="text-xl tracking-wide">MICROSCALERS.AI</span>
           </div>
           <div className="flex items-center gap-4">
             <WalletConnect />
@@ -31,16 +31,83 @@ export function TerminalLanding() {
           </p>
 
           <div className="flex justify-center gap-4">
-            <button
-              onClick={() => setShowPayment(true)}
-              className="px-6 py-3 bg-green-600 hover:bg-green-500 text-black font-bold"
+            <a
+              href="https://members.microscalers.eth.limo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-green-600 hover:bg-green-500 text-black font-bold border border-green-700"
             >
-              JOIN_SCALERS() → $29 USDC
-            </button>
-            <button className="px-6 py-3 border border-green-600 hover:bg-green-900">
+              JOIN_SCALERS() → $29_USDC
+            </a>
+            <a
+              href="https://workers.microscalers.eth.limo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 border border-green-600 hover:bg-green-900 font-bold"
+            >
               PROVIDE_COMPUTE()
-            </button>
+            </a>
           </div>
+
+          {/* quicklinks */}
+          <div className="flex justify-center gap-6 mt-8 text-sm text-green-500">
+            <a
+              href="https://docs.microscalers.eth.limo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-green-400 underline"
+            >
+              DOCS
+            </a>
+            <a
+              href="https://workers.microscalers.eth.limo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-green-400 underline"
+            >
+              WORKERS
+            </a>
+            <a
+              href="https://members.microscalers.eth.limo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-green-400 underline"
+            >
+              MEMBERS
+            </a>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12 p-6 border border-green-900">
+          <div>
+            <div className="text-3xl font-bold text-green-400">32</div>
+            <div className="text-sm text-green-600">RTX_5090_RIGS</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold text-green-400">265+</div>
+            <div className="text-sm text-green-600">VERIFIED_SCALERS</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold text-green-400">128GB</div>
+            <div className="text-sm text-green-600">VRAM_CLUSTER</div>
+          </div>
+        </div>
+
+        {/* Network Log */}
+        <div className="mt-12 border border-green-900 p-6 text-left">
+          <h3 className="text-green-400 text-lg font-bold mb-4">NETWORK_LOG</h3>
+          <p className="text-sm text-green-600 leading-relaxed">
+            {'>'} blockchain_verified: every provider verified on-chain. trustcat oracle escrow.
+            <br />
+            {'>'} high_perf_hardware: rtx 5090 gpus. 7950x cpus. nvme arrays. 10gb/s networking.
+            <br />
+            {'>'} instant_provisioning: docker/k8s ready. deepspeed support. cuda 12.4 optimized.
+            <br />
+            {'>'} peer_to_peer: zero custody. funds locked in escrow. auto-release via chainlink.
+            <br />
+            {'>'} ens_subdomain: join scalers → get username.microscaler.eth
+          </p>
         </div>
       </main>
     </div>

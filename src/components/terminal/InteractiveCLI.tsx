@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi'
 import { base } from 'wagmi/chains'
 import { notifyJoinCommand, notifyProvideCommand } from '../../lib/discord'
@@ -7,7 +7,7 @@ export type InteractiveCLIProps = {
   onJoin?: () => void
 }
 
-export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
+export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
   const { address, isConnected, chain } = useAccount()
   const { connect, connectors, status: connectStatus, error: connectError } = useConnect()
   const { disconnect } = useDisconnect()
@@ -17,23 +17,47 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
     // Load history from localStorage on component mount
     try {
       const saved = localStorage.getItem("cli-history")
-      return saved ? JSON.parse(saved) : ['Welcome to Microscalers CLI — type `help` to begin.']
+      return saved ? JSON.parse(saved) : []
     } catch {
-      return ['Welcome to Microscalers CLI — type `help` to begin.']
+      return []
     }
   })
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState("")
   const [cursorVisible, setCursorVisible] = useState(true)
+  const [booting, setBooting] = useState(true)
   const terminalRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Blinking cursor effect
+  // Boot-sequence lines
+  const bootLines = [
+    "[ booting microscalers node... ]",
+    "[ connecting to Base L2... ok ✅ ]",
+    "[ initializing wagmi... done ]",
+    "Welcome to Microscalers CLI — type `help` to begin.",
+  ]
+
+  // Typewriter effect for boot sequence
+  useEffect(() => {
+    let idx = 0
+    const interval = setInterval(() => {
+      if (idx < bootLines.length) {
+        setHistory((h) => [...h, bootLines[idx]])
+        idx++
+      } else {
+        clearInterval(interval)
+        setBooting(false)
+      }
+    }, 900)
+    return () => clearInterval(interval)
+  }, [])
+
+  // blinking cursor
   useEffect(() => {
     const t = setInterval(() => setCursorVisible((v) => !v), 500)
     return () => clearInterval(t)
   }, [])
 
-  // Auto scroll to bottom
+  // auto scroll
   useEffect(() => {
     terminalRef.current?.scrollTo(0, terminalRef.current.scrollHeight)
   }, [history])
@@ -46,11 +70,6 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
       console.warn("Failed to save CLI history to localStorage:", error)
     }
   }, [history])
-
-  // Auto focus input
-  useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
 
   const handleConnect = useCallback(async () => {
     try {
@@ -88,7 +107,8 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
 
     switch (clean) {
       case "help":
-        output = "Available commands:\nhelp, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, clear-history, version"
+        output =
+          "Available commands:\nhelp, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, clear-history, version"
         break
       case "join":
         output = "→ Opening membership flow ($29 USDC)..."
@@ -113,7 +133,8 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
         }
         break
       case "status":
-        output = "Rigs: 32 • Scalers: 265+ • VRAM: 128 GB cluster • Network: Base L2"
+        output =
+          "Rigs: 32 • Scalers: 265+ • VRAM: 128 GB cluster • Network: Base L2"
         break
       case "connect":
         void handleConnect()
@@ -133,13 +154,13 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
         handleSwitchBase()
         return
       case "version":
-        output = "Microscalers CLI v1.0.0"
+        output = "Microscalers CLI v1.1.0"
         break
       case "clear":
         setHistory([])
         return
       case "clear-history":
-        setHistory(['Welcome to Microscalers CLI — type `help` to begin.'])
+        setHistory(bootLines)
         output = "Command history cleared"
         break
       default:
@@ -155,23 +176,19 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
     e.preventDefault()
     if (!input.trim()) return
     handleCommand(input)
-    setInput('')
+    setInput("")
   }, [input, handleCommand])
 
-  // Handle arrow key navigation
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      e.preventDefault()
-      // Could implement history navigation here if needed
-    }
-  }, [])
+  useEffect(() => {
+    if (!booting) inputRef.current?.focus()
+  }, [booting])
 
   return (
     <div
       style={{
         width: "80%",
         maxWidth: "900px",
-        minHeight: "240px",
+        minHeight: "260px",
         backgroundColor: "#0a0a0a",
         color: "#00FF99",
         border: "1px solid #00FF99",
@@ -181,7 +198,7 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
         overflowY: "auto",
       }}
       ref={terminalRef}
-      onClick={() => inputRef.current?.focus()}
+      onClick={() => !booting && inputRef.current?.focus()}
     >
       {history.map((line, i) => (
         <pre key={i} style={{ margin: 0, whiteSpace: "pre-wrap" }}>
@@ -195,8 +212,7 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
           ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={isSwitching}
+          disabled={booting || isSwitching}
           style={{
             background: "transparent",
             border: "none",
@@ -219,4 +235,4 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
       </form>
     </div>
   )
-})
+}

@@ -337,7 +337,7 @@ curl -s https://api.microscalers.ai/cli?cmd=join
       ))}
 
       {!booting && (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", alignItems: "center" }}>
           <span style={{ color: "#00FF99" }}>$ </span>
           <input
             ref={inputRef}
@@ -351,7 +351,8 @@ curl -s https://api.microscalers.ai/cli?cmd=join
               color: "#FFFFFF",
               fontFamily: "inherit",
               fontSize: "18px",
-              width: "80%",
+              flex: 1,
+              minWidth: 0,
             }}
           />
           <span
@@ -359,6 +360,7 @@ curl -s https://api.microscalers.ai/cli?cmd=join
               opacity: cursorVisible ? 1 : 0,
               color: "#00FF99",
               fontWeight: "bold",
+              marginLeft: "auto",
             }}
           >
             █

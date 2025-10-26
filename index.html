@@ -44,36 +44,8 @@
 <body>
   <div class="banner">Base L2 Connected • Network: Base • Ready for Transactions</div>
 
-  <div class="box">
-    <!-- ASCII kept intentionally simple (pure 7-bit) to avoid glyph issues -->
-     <pre class="ascii">
- ____   ____    _    _     _____ ____  ____  
-/ ___| / ___|  / \  | |   | ____|  _ \/ ___| 
-\___ \| |     / _ \ | |   |  _| | |_) \___ \ 
- ___) | |___ / ___ \| |___| |___|  _ &lt; ___) |
-|____/ \____/_/   \_\_____|_____|_| \_\____/ 
-</pre>
-
-
-    <p class="cli"><span class="dim">microscalers.eth</span> — trusted compute brokerage</p>
-    <p>
-      → <a href="https://docs.microscalers.eth.limo">docs.microscalers.eth.limo</a><br>
-      → <a href="https://members.microscalers.eth.limo">members.microscalers.eth.limo</a><br>
-      → <a href="https://dev.microscalers.eth.limo">dev.microscalers.eth.limo</a>
-    </p>
-
-    <p class="cli dim">[ booting cat node... ]</p>
-    <p class="cli"><span class="dim">[ connecting to Base L2... </span><span class="ok">ok ✓</span><span class="dim"> ]</span></p>
-    <p class="cli"><span class="dim">[ initializing wagmi... </span><span class="ok">done ]</span></p>
-
-    <p class="cli">Welcome to <span class="ok">CAT CLI</span> — type <span class="dim">help</span> to begin.</p>
-
-    <pre class="cli">( .. ) [ accessing blockchain... ]
-> ^ <span class="cursor"></span></pre>
-
-    <!-- React app mount (keep if you use Vite/React; safe to leave empty) -->
-    <div id="root"></div>
-  </div>
+  <!-- React app mount -->
+  <div id="root"></div>
 
   <!-- Keep Vite entry if your app mounts -->
   <script type="module" src="/src/main.tsx"></script>

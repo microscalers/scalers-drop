@@ -1,11 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { WagmiProvider, createConfig, http } from 'wagmi'
-import { base, mainnet } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { injected } from 'wagmi/connectors'
-import './index.css'
-import App from "./App"
+import { WagmiProvider } from 'wagmi'
+import { base, mainnet } from 'wagmi/chains'
+import { http, createConfig, injected } from 'wagmi'
+import App from './App'
 
 const config = createConfig({
   chains: [base, mainnet],

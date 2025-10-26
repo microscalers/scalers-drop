@@ -27,11 +27,7 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const prompt = useMemo(() => {
-    const who = isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'guest'
-    const net = chain?.name ?? 'no-net'
-    return `${who}@${net}`
-  }, [isConnected, address, chain?.name])
+  // Display-only prompt previously showed user@network; UI now shows a right-aligned "$" cursor
 
   const appendLines = useCallback((newLines: string | string[]) => {
     const arr = Array.isArray(newLines) ? newLines : [newLines]
@@ -199,7 +195,6 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
         ))}
       </div>
       <form onSubmit={onSubmit} className="flex items-center gap-2 border-t border-green-900 px-3 py-2">
-        <span className="text-green-500 text-xs sm:text-sm">{prompt}$</span>
         <input
           ref={inputRef}
           aria-label="CLI input"
@@ -210,6 +205,7 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
           onKeyDown={onKeyDown}
           disabled={isSwitching}
         />
+        <span className="text-green-500 text-xs sm:text-sm ml-2">$</span>
       </form>
     </div>
   )

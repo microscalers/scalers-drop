@@ -47,283 +47,175 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
     }
   }, [history])
 
-  const printHelp = useCallback(() => {
-    appendLines([
-      'Commands:',
-      '  help              Show this help',
-      '  join              Open membership flow ($29 USDC)',
-      '  provide           Open provider registration',
-      '  status            Show cluster status',
-      '  connect           Connect wallet',
-      '  disconnect        Disconnect wallet',
-      '  whoami            Print current account',
-      '  chain             Print active chain',
-      '  switch base       Switch network to Base L2',
-      '  clear             Clear screen',
-      '  clear-history     Clear command history',
-      '  version           Print CLI version',
-    ])
-  }, [appendLines])
+  // Auto focus input
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
 
   const handleConnect = useCallback(async () => {
     try {
       const injected = connectors.find(c => (c as any).type === 'injected') ?? connectors[0]
       if (!injected) {
-        appendLines('No wallet connector available')
+        setHistory(prev => [...prev, 'No wallet connector available'])
         return
       }
       await connect({ connector: injected })
-      appendLines('Connecting wallet...')
+      setHistory(prev => [...prev, 'Connecting wallet … ok ✅'])
     } catch (err) {
-      appendLines('Connect failed')
+      setHistory(prev => [...prev, 'Connect failed'])
     }
-  }, [connect, connectors, appendLines])
+  }, [connect, connectors])
 
   const handleDisconnect = useCallback(() => {
     disconnect()
-    appendLines('Disconnected')
-  }, [disconnect, appendLines])
+    setHistory(prev => [...prev, 'Wallet disconnected.'])
+  }, [disconnect])
 
   const handleSwitchBase = useCallback(() => {
     switchChain({ chainId: base.id })
-    appendLines('Switching to Base L2...')
-  }, [switchChain, appendLines])
+    setHistory(prev => [...prev, 'Switched network → Base L2'])
+  }, [switchChain])
 
-  const handleStatus = useCallback(() => {
-    appendLines([
-      'SCALERS STATUS:',
-      '  RTX_5090_RIGS:   32',
-      '  VERIFIED_SCALERS: 265+',
-      '  VRAM_CLUSTER:    128GB',
-    ])
-  }, [appendLines])
-
-  const handleCommand = useCallback((raw: string) => {
-    const cmd = raw.trim()
-    if (!cmd) return
+  const handleCommand = useCallback((cmd: string) => {
+    let output = ""
+    const clean = cmd.trim().toLowerCase()
 
     // Add to history with limit (keep last 100 commands)
     setHistory(prev => {
-      const newHistory = [...prev, cmd]
+      const newHistory = [...prev, `$ ${cmd}`]
       return newHistory.length > 100 ? newHistory.slice(-100) : newHistory
     })
-    setHistoryIdx(null)
-    appendLines(`$ ${cmd}`, false) // Don't animate the command input
 
-    if (cmd === 'help') {
-      printHelp()
-      return
-    }
-    if (cmd === 'clear') {
-      setLines([])
-      nextId.current = 1
-      return
-    }
-    if (cmd === 'clear-history') {
-      setHistory([])
-      appendLines('Command history cleared')
-      return
-    }
-    if (cmd === 'join') {
-      onJoin?.()
-      appendLines('Opening JOIN_SCALERS flow...')
-      
-      // Send Discord webhook notification
-      if (isConnected && address && chain) {
-        notifyJoinCommand(address, chain.id).catch(error => {
-          console.warn('Failed to send Discord notification:', error)
-        })
-      }
-      return
-    }
-    if (cmd === 'provide' || cmd === 'provide-compute') {
-      appendLines('Opening PROVIDE_COMPUTE flow...')
-      appendLines('This will open the provider registration process')
-      
-      // Send Discord webhook notification
-      if (isConnected && address && chain) {
-        notifyProvideCommand(address, chain.id).catch(error => {
-          console.warn('Failed to send Discord notification:', error)
-        })
-      }
-      return
-    }
-    if (cmd === 'status') {
-      handleStatus()
-      return
-    }
-    if (cmd === 'connect') {
-      void handleConnect()
-      return
-    }
-    if (cmd === 'disconnect') {
-      handleDisconnect()
-      return
-    }
-    if (cmd === 'whoami') {
-      const who = isConnected && address ? `${address}` : 'guest'
-      appendLines(who)
-      return
-    }
-    if (cmd === 'chain') {
-      const info = chain ? `${chain.name} (id=${chain.id})` : 'not connected'
-      appendLines(info)
-      return
-    }
-    if (cmd === 'switch base') {
-      handleSwitchBase()
-      return
-    }
-    if (cmd === 'version') {
-      appendLines('Microscalers CLI v0.1.0')
-      return
+    switch (clean) {
+      case "help":
+        output = "Available commands:\nhelp, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, clear-history, version"
+        break
+      case "join":
+        output = "→ Opening membership flow ($29 USDC)..."
+        onJoin?.()
+        
+        // Send Discord webhook notification
+        if (isConnected && address && chain) {
+          notifyJoinCommand(address, chain.id).catch(error => {
+            console.warn('Failed to send Discord notification:', error)
+          })
+        }
+        break
+      case "provide":
+      case "provide-compute":
+        output = "→ Opening provider registration flow..."
+        
+        // Send Discord webhook notification
+        if (isConnected && address && chain) {
+          notifyProvideCommand(address, chain.id).catch(error => {
+            console.warn('Failed to send Discord notification:', error)
+          })
+        }
+        break
+      case "status":
+        output = "Rigs: 32 • Scalers: 265+ • VRAM: 128 GB cluster • Network: Base L2"
+        break
+      case "connect":
+        void handleConnect()
+        return
+      case "disconnect":
+        handleDisconnect()
+        return
+      case "whoami":
+        const who = isConnected && address ? `${address}` : 'guest@microscalers.eth'
+        output = who
+        break
+      case "chain":
+        const info = chain ? `${chain.name} (id=${chain.id})` : 'not connected'
+        output = `Active chain: ${info}`
+        break
+      case "switch base":
+        handleSwitchBase()
+        return
+      case "version":
+        output = "Microscalers CLI v1.0.0"
+        break
+      case "clear":
+        setHistory([])
+        return
+      case "clear-history":
+        setHistory(['Welcome to Microscalers CLI — type `help` to begin.'])
+        output = "Command history cleared"
+        break
+      default:
+        output = `Command not found: ${cmd}`
     }
 
-    appendLines(`Command not found: ${cmd}. Type "help"`)
-  }, [appendLines, onJoin, handleStatus, handleConnect, handleDisconnect, isConnected, address, chain, handleSwitchBase, printHelp])
+    if (output) {
+      setHistory(prev => [...prev, output])
+    }
+  }, [onJoin, isConnected, address, chain, handleConnect, handleDisconnect, handleSwitchBase])
 
-  const onSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim()) return
-    const current = input
+    handleCommand(input)
     setInput('')
-    handleCommand(current)
   }, [input, handleCommand])
 
-  const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'ArrowUp') {
+  // Handle arrow key navigation
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault()
-      setHistoryIdx((idx) => {
-        const next = idx === null ? history.length - 1 : Math.max(0, idx - 1)
-        const val = history[next]
-        if (val !== undefined) setInput(val)
-        return next
-      })
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setHistoryIdx((idx) => {
-        if (idx === null) return null
-        const next = Math.min(history.length - 1, idx + 1)
-        const val = history[next]
-        if (val !== undefined) setInput(val)
-        return next
-      })
-    }
-  }, [history])
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-    }
-  }, [lines])
-
-  useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
-
-  useEffect(() => {
-    if (connectStatus === 'error' && connectError) {
-      appendLines('Wallet connect error')
-    }
-  }, [connectStatus, connectError, appendLines])
-
-  // Save history to localStorage whenever it changes
-  useEffect(() => {
-    try {
-      localStorage.setItem("cli-history", JSON.stringify(history))
-    } catch (error) {
-      console.warn("Failed to save CLI history to localStorage:", error)
-    }
-  }, [history])
-
-  // Cleanup typing timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current)
-      }
+      // Could implement history navigation here if needed
     }
   }, [])
 
   return (
-    <div style={{
-      border: "1px solid #00FF99",
-      backgroundColor: "rgba(0, 255, 153, 0.1)",
-      borderRadius: "8px",
-      marginBottom: "1rem",
-      width: "100%",
-      maxWidth: "800px"
-    }}>
-      <style>{`
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0; }
-        }
-      `}</style>
-      <div 
-        ref={scrollRef} 
-        style={{
-          height: "240px",
-          overflow: "auto",
-          padding: "1rem",
-          fontSize: "14px",
-          color: "#00FF99",
-          fontFamily: "JetBrains Mono, monospace",
-          lineHeight: "1.4"
-        }}
-      >
-        {lines.map(line => (
-          <div key={line.id} style={{ whiteSpace: "pre-wrap", marginBottom: "0.25rem" }}>
-            {line.displayText || line.text}
-            {line.isTyping && (
-              <span style={{ 
-                animation: "blink 1s infinite",
-                color: "#00FF99",
-                fontWeight: "bold"
-              }}>
-                _
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
-      <form 
-        onSubmit={onSubmit} 
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.5rem",
-          borderTop: "1px solid #00FF99",
-          padding: "0.75rem",
-          backgroundColor: "rgba(0, 0, 0, 0.3)"
-        }}
-      >
-        <span style={{ 
-          color: "#00FF99", 
-          fontSize: "12px",
-          fontFamily: "JetBrains Mono, monospace",
-          fontWeight: "bold"
-        }}>
-          {prompt}$
-        </span>
+    <div
+      style={{
+        width: "80%",
+        maxWidth: "900px",
+        minHeight: "240px",
+        backgroundColor: "#0a0a0a",
+        color: "#00FF99",
+        border: "1px solid #00FF99",
+        borderRadius: "8px",
+        padding: "1rem",
+        fontFamily: "JetBrains Mono, monospace",
+        overflowY: "auto",
+      }}
+      ref={terminalRef}
+      onClick={() => inputRef.current?.focus()}
+    >
+      {history.map((line, i) => (
+        <pre key={i} style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+          {line}
+        </pre>
+      ))}
+
+      <form onSubmit={handleSubmit}>
+        <span>$ </span>
         <input
           ref={inputRef}
-          aria-label="CLI input"
-          style={{
-            flex: 1,
-            backgroundColor: "transparent",
-            outline: "none",
-            border: "none",
-            color: "#00FF99",
-            fontFamily: "JetBrains Mono, monospace",
-            fontSize: "14px"
-          }}
-          placeholder="type 'help'"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={onKeyDown}
+          onKeyDown={handleKeyDown}
           disabled={isSwitching}
+          style={{
+            background: "transparent",
+            border: "none",
+            outline: "none",
+            color: "#00FF99",
+            fontFamily: "inherit",
+            fontSize: "1rem",
+            width: "80%",
+          }}
         />
+        <span
+          style={{
+            opacity: cursorVisible ? 1 : 0,
+            color: "#00FF99",
+            fontWeight: "bold",
+          }}
+        >
+          █
+        </span>
       </form>
     </div>
   )

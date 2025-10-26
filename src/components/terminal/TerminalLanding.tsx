@@ -15,7 +15,9 @@ export function TerminalLanding() {
             <Terminal className="w-6 h-6" />
             <span className="text-xl">MICROSCALERS.AI</span>
           </div>
-          <WalletConnect />
+          <div className="flex items-center gap-4">
+            <WalletConnect />
+          </div>
         </div>
       </header>
 
@@ -27,12 +29,13 @@ export function TerminalLanding() {
           <p className="text-xl text-green-300 mb-8">
             Industrial-grade GPU infrastructure. ENS-verified. Base L2 escrow.
           </p>
+
           <div className="flex justify-center gap-4">
             <button
               onClick={() => setShowPayment(true)}
               className="px-6 py-3 bg-green-600 hover:bg-green-500 text-black font-bold"
             >
-              JOIN_SCALERS() → $29_USDC
+              JOIN_SCALERS() → $29 USDC
             </button>
             <button className="px-6 py-3 border border-green-600 hover:bg-green-900">
               PROVIDE_COMPUTE()

@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi'
 import { base } from 'wagmi/chains'
 import { notifyJoinCommand, notifyProvideCommand } from '../../lib/discord'
@@ -7,38 +7,25 @@ export type InteractiveCLIProps = {
   onJoin?: () => void
 }
 
-type CliLine = {
-  id: number
-  text: string
-  isTyping?: boolean
-  displayText?: string
-}
-
 export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
   const { address, isConnected, chain } = useAccount()
   const { connect, connectors, status: connectStatus, error: connectError } = useConnect()
   const { disconnect } = useDisconnect()
   const { switchChain, isPending: isSwitching } = useSwitchChain()
 
-  const [input, setInput] = useState('')
-  const [lines, setLines] = useState<CliLine[]>(() => [
-    { id: 1, text: 'Microscalers CLI v0.1.0 — type "help"', isTyping: true, displayText: '' },
-  ])
   const [history, setHistory] = useState<string[]>(() => {
     // Load history from localStorage on component mount
     try {
       const saved = localStorage.getItem("cli-history")
-      return saved ? JSON.parse(saved) : []
+      return saved ? JSON.parse(saved) : ['Welcome to Microscalers CLI — type `help` to begin.']
     } catch {
-      return []
+      return ['Welcome to Microscalers CLI — type `help` to begin.']
     }
   })
-  const [historyIdx, setHistoryIdx] = useState<number | null>(null)
-  const [isTyping, setIsTyping] = useState(true)
-  const nextId = useRef(2)
-  const scrollRef = useRef<HTMLDivElement | null>(null)
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [input, setInput] = useState('')
+  const [cursorVisible, setCursorVisible] = useState(true)
+  const terminalRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const prompt = useMemo(() => {
     const who = isConnected && address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'guest'

@@ -1,9 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { Terminal } from 'lucide-react'
-import { WalletConnect } from '../wallet/WalletConnect'
-import { ScalersPayment } from '../wallet/ScalersPayment'
-import { InteractiveCLI } from './InteractiveCLI'
+import WalletConnect from '@/components/ui/WalletConnect'
 
 export function TerminalLanding() {
   const [showPayment, setShowPayment] = useState(false)
@@ -24,57 +22,36 @@ export function TerminalLanding() {
       </header>
 
       {/* Hero */}
-      <main className="max-w-7xl mx-auto p-8">
-        <div className="py-12">
-          {/* CLI block */}
-          <div className="mb-6">
-            <InteractiveCLI onJoin={() => setShowPayment(true)} />
-          </div>
-
+      <main className="max-w-7xl mx-auto p-8 text-green-400">
+        <div className="py-12 text-center">
           <div className="text-sm text-green-600 mb-2">$ ./microscalers --status</div>
           <h1 className="text-5xl font-bold mb-4">Trusted Compute Brokerage</h1>
           <p className="text-xl text-green-300 mb-8">
             Industrial-grade GPU infrastructure. ENS-verified. Base L2 escrow.
           </p>
 
-          {/* CTA */}
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <div className="flex justify-center gap-4">
             <a
               href="https://members.microscalers.eth.limo"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 bg-green-600 hover:bg-green-500 text-black font-bold border border-green-700 text-center"
+              className="px-6 py-3 bg-green-600 hover:bg-green-500 text-black font-bold border border-green-700"
             >
               JOIN_SCALERS() → $29_USDC
             </a>
-            <button className="px-6 py-3 border border-green-600 hover:bg-green-900">
-              PROVIDE_COMPUTE()
-            </button>
-          </div>
-
-          {/* Quick links */}
-          <div className="mt-8 flex justify-center gap-8 text-sm">
             <a
               href="https://workers.microscalers.eth.limo"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-green-400 underline"
+              className="hover:text-green-400 underline px-6 py-3 border border-green-600 hover:bg-green-900"
             >
-              WORKERS
-            </a>
-            <a
-              href="https://members.microscalers.eth.limo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-green-400 underline"
-            >
-              MEMBERS
+              PROVIDE_COMPUTE()
             </a>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12 p-6 border border-green-900">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12 p-6 border border-green-900 text-center">
           <div>
             <div className="text-3xl font-bold text-green-400">32</div>
             <div className="text-sm text-green-600">RTX_5090_RIGS</div>
@@ -89,7 +66,7 @@ export function TerminalLanding() {
           </div>
         </div>
 
-        {/* Network log */}
+        {/* Network Log */}
         <div className="mt-12 border border-green-900 p-6 text-left">
           <h3 className="text-green-400 text-lg font-bold mb-4">NETWORK_LOG</h3>
           <p className="text-sm text-green-600 leading-relaxed">
@@ -102,11 +79,13 @@ export function TerminalLanding() {
             {'>'} peer_to_peer: zero custody. funds locked in escrow. auto-release via chainlink.
             <br />
             {'>'} ens_subdomain: join scalers → get username.microscaler.eth
+          </p>
+        </div>
 
-      {/* Footer Build ID */}
-      <footer className="mt-8 text-green-700 text-xs text-center border-t border-green-900 pt-4">
-        build: {import.meta.env.VITE_COMMIT_HASH || 'local-dev'}
-      </footer>
+        {/* Footer Build ID */}
+        <footer className="mt-8 text-green-700 text-xs text-center border-t border-green-900 pt-4">
+          build: {import.meta.env.VITE_COMMIT_HASH || 'local-dev'}
+        </footer>
       </main>
     </div>
   )

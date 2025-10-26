@@ -104,7 +104,7 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
     switch (clean) {
       case "help":
         output =
-          "Available commands:\nhelp, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, clear-history, version"
+          "Available commands:\nhelp, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, clear-history, version\n\nPortal commands:\nopen docs, open members, open dev, open ens"
         break
       case "join":
         output = "→ Opening membership flow ($29 USDC)..."
@@ -158,6 +158,22 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
       case "clear-history":
         setHistory(bootLines)
         output = "Command history cleared"
+        break
+      case "open docs":
+        output = "Opening docs → https://docs.microscalers.eth.limo"
+        window.open("https://docs.microscalers.eth.limo", "_blank")
+        break
+      case "open members":
+        output = "Opening members portal → https://members.microscalers.eth.limo"
+        window.open("https://members.microscalers.eth.limo", "_blank")
+        break
+      case "open dev":
+        output = "Opening dev portal → https://dev.microscalers.eth.limo"
+        window.open("https://dev.microscalers.eth.limo", "_blank")
+        break
+      case "open ens":
+        output = "Opening microscalers.eth ENS root → https://microscalers.eth.limo"
+        window.open("https://microscalers.eth.limo", "_blank")
         break
       default:
         output = `Command not found: ${cmd}`

@@ -1,103 +1,112 @@
-'use client'
-import { useState } from 'react'
-import { Terminal } from 'lucide-react'
-import WalletConnect from '@/components/ui/WalletConnect'
+import React from "react"
 
 export function TerminalLanding() {
-  const [showPayment, setShowPayment] = useState(false)
-
   return (
-    <div className="min-h-screen bg-black text-green-400 font-mono">
-      {/* Header */}
-      <header className="border-b border-green-900 p-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Terminal className="w-6 h-6" />
-            <span className="text-xl tracking-wide">MICROSCALERS.AI</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <WalletConnect />
-          </div>
-        </div>
-      </header>
+    <main
+      style={{
+        backgroundColor: "#000",
+        color: "#00FF99",
+        fontFamily: "JetBrains Mono, monospace",
+        padding: "2rem",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+        <pre style={{ color: "#00FF99", margin: 0 }}>
+{`  ^._.^ [accessing blockchain...]`}
+        </pre>
+        <h1 style={{ fontSize: "2rem", margin: "1rem 0" }}>
+          MICROSCALE<span style={{ color: "#fff" }}>RS.AI</span>
+        </h1>
+        <p style={{ opacity: 0.8 }}>
+          industrial-grade gpu infrastructure. ens-verified. base l2 escrow.
+        </p>
+      </div>
 
-      {/* Hero */}
-      <main className="max-w-7xl mx-auto p-8 text-green-400">
-        <div className="py-12 text-center">
-          <div className="text-sm text-green-600 mb-2">$ ./microscalers --status</div>
-          <h1 className="text-5xl font-bold mb-4">Trusted Compute Brokerage</h1>
-          <p className="text-xl text-green-300 mb-8">
-            Industrial-grade GPU infrastructure. ENS-verified. Base L2 escrow.
-          </p>
-
-          <div className="flex justify-center gap-4">
-            <a
-              href="https://members.microscalers.eth.limo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-green-600 hover:bg-green-500 text-black font-bold border border-green-700"
-            >
-              JOIN_SCALERS() → $29_USDC
-            </a>
-            <a
-              href="https://workers.microscalers.eth.limo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-green-400 underline px-6 py-3 border border-green-600 hover:bg-green-900"
-            >
-              PROVIDE_COMPUTE()
-            </a>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12 p-6 border border-green-900 text-center">
+      <section
+        style={{
+          border: "1px solid #00FF99",
+          padding: "1rem 2rem",
+          borderRadius: "8px",
+          marginBottom: "2rem",
+          width: "fit-content",
+        }}
+      >
+        <h3 style={{ marginBottom: "1rem" }}>$ microscalers --status</h3>
+        <div style={{ display: "flex", gap: "2rem" }}>
           <div>
-            <div className="text-3xl font-bold text-green-400">32</div>
-            <div className="text-sm text-green-600">RTX_5090_RIGS</div>
+            <div style={{ fontSize: "1.5rem", color: "#fff" }}>32</div>
+            <small>R 5090 RIGS</small>
           </div>
           <div>
-            <div className="text-3xl font-bold text-green-400">265+</div>
-            <div className="text-sm text-green-600">VERIFIED_SCALERS</div>
+            <div style={{ fontSize: "1.5rem", color: "#fff" }}>265+</div>
+            <small>VERIFIED SCALERS</small>
           </div>
           <div>
-            <div className="text-3xl font-bold text-green-400">128GB</div>
-            <div className="text-sm text-green-600">VRAM_CLUSTER</div>
+            <div style={{ fontSize: "1.5rem", color: "#fff" }}>128GB</div>
+            <small>VRAM CLUSTER</small>
           </div>
         </div>
+      </section>
 
-        {/* Network Log */}
-        <div className="mt-12 border border-green-900 p-6 text-left">
-          <h3 className="text-green-400 text-lg font-bold mb-4">NETWORK_LOG</h3>
-          <p className="text-sm text-green-600 leading-relaxed">
-            {'>'} blockchain_verified: every provider verified on-chain. trustcat oracle escrow.
-            <br />
-            {'>'} high_perf_hardware: rtx 5090 gpus. 7950x cpus. nvme arrays. 10gb/s networking.
-            <br />
-            {'>'} instant_provisioning: docker/k8s ready. deepspeed support. cuda 12.4 optimized.
-            <br />
-            {'>'} peer_to_peer: zero custody. funds locked in escrow. auto-release via chainlink.
-            <br />
-            {'>'} ens_subdomain: join scalers → get username.microscaler.eth
-          </p>
-        </div>
+      <section
+        style={{
+          border: "1px solid #00FF99",
+          padding: "1rem 2rem",
+          borderRadius: "8px",
+          width: "fit-content",
+          textAlign: "left",
+          marginBottom: "3rem",
+        }}
+      >
+        <h3 style={{ marginBottom: "1rem" }}>network log</h3>
+        <p style={{ opacity: 0.8 }}>
+          &gt; blockchain_verified: every provider verified on-chain.
+          trustcall oracle escrow.
+          <br />
+          &gt; high_perf_hardware: rtx 5090 gpus. 7950x cpus. nvme arrays.
+          10gb/s networking.
+        </p>
+      </section>
 
-{/* ===== BUILD FOOTER ===== */}
-<footer
-  style={{
-    marginTop: '4rem',
-    padding: '1rem 0',
-    borderTop: '1px solid #00ff99',
-    textAlign: 'center',
-    fontFamily: 'JetBrains Mono, monospace',
-    fontSize: '0.85rem',
-    color: '#00ff99',
-    opacity: 0.8
-  }}
->
-  <span>
-    microscalers.ai • build&nbsp;
-    <code>{import.meta.env.VITE_BUILD_ID || 'local-dev'}</code>&nbsp;•&nbsp;
-    deployed&nbsp;{new Date().toUTCString()}
-  </span>
-</footer>
+      {/* ===== FOOTER ===== */}
+      <footer
+        style={{
+          marginTop: "auto",
+          borderTop: "1px solid #00FF99",
+          paddingTop: "1rem",
+          fontSize: "0.9rem",
+          opacity: 0.8,
+          textAlign: "center",
+        }}
+      >
+        <p>
+          $ build-id:{" "}
+          <code>{import.meta.env.VITE_BUILD_ID || "local-dev"}</code> |
+          deployed: {new Date().toUTCString()}
+          <br />
+          <a
+            href="https://microscalers.eth.limo"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#00FF99" }}
+          >
+            microscalers.eth
+          </a>{" "}
+          •{" "}
+          <a
+            href="https://trustcat.eth.limo"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#00FF99" }}
+          >
+            trustcat.eth
+          </a>
+        </p>
+      </footer>
+    </main>
+  )
+}

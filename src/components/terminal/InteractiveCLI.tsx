@@ -104,7 +104,7 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
     switch (clean) {
       case "help":
         output =
-          "Available commands:\nhelp, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, clear-history, version\n\nPortal commands:\nopen docs, open members, open dev, open ens"
+          "Available commands:\nhelp, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, clear-history, version\n\nPortal commands:\nopen docs, open members, open dev, open ens\n\nAPI commands:\napi, curl, quickstart"
         break
       case "join":
         output = "→ Opening membership flow ($29 USDC)..."
@@ -174,6 +174,50 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
       case "open ens":
         output = "Opening microscalers.eth ENS root → https://microscalers.eth.limo"
         window.open("https://microscalers.eth.limo", "_blank")
+        break
+      case "api":
+      case "curl":
+        output = `Microscalers API Commands:
+
+# Quick start - check cluster status
+curl https://api.microscalers.eth.limo/v1/status
+
+# List available rigs
+curl -X GET https://api.microscalers.eth.limo/v1/rigs
+
+# Request compute (requires auth)
+curl -X POST https://api.microscalers.eth.limo/v1/compute \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{"gpu_type": "RTX5090", "duration": 3600, "memory": "24GB"}'
+
+# Get your account info
+curl -X GET https://api.microscalers.eth.limo/v1/account \\
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# Monitor job status
+curl -X GET https://api.microscalers.eth.limo/v1/jobs/JOB_ID \\
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# Get pricing
+curl -X GET https://api.microscalers.eth.limo/v1/pricing
+
+# WebSocket for real-time updates
+wss://api.microscalers.eth.limo/v1/stream
+
+Ready to integrate with your workflow! 🚀`
+        break
+      case "quickstart":
+        output = `# Copy-paste this into your terminal:
+curl https://api.microscalers.eth.limo/v1/status
+
+# Or with jq for pretty output:
+curl -s https://api.microscalers.eth.limo/v1/status | jq .
+
+# Get rig availability:
+curl -s https://api.microscalers.eth.limo/v1/rigs | jq '.rigs[] | {id, gpu_type, status, price_per_hour}'
+
+Ready to build! 🚀`
         break
       default:
         output = `Command not found: ${cmd}`

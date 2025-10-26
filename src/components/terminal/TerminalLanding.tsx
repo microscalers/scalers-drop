@@ -102,13 +102,12 @@ export function TerminalLanding() {
             {'>'} peer_to_peer: zero custody. funds locked in escrow. auto-release via chainlink.
             <br />
             {'>'} ens_subdomain: join scalers → get username.microscaler.eth
-          </p>
-        </div>
 
       {/* Footer Build ID */}
       <footer className="mt-8 text-green-700 text-xs text-center border-t border-green-900 pt-4">
         build: {import.meta.env.VITE_COMMIT_HASH || 'local-dev'}
       </footer>
+      </main>
     </div>
   )
 }

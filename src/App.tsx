@@ -1,11 +1,13 @@
 import React from 'react'
 import { TerminalLanding } from './components/terminal/TerminalLanding'
+import { BaseL2Banner } from './components/ui/BaseL2Banner'
 
 export function App() {
   return (
-    <div className="min-h-screen bg-black text-green-400 font-mono p-6">
+    <>
+      <BaseL2Banner />
       <TerminalLanding />
-    </div>
+    </>
   )
 }
 

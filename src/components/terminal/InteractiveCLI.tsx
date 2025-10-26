@@ -1,6 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi'
 import { base } from 'wagmi/chains'
+import { notifyJoinCommand, notifyProvideCommand } from '../../lib/discord'
 
 export type InteractiveCLIProps = {
   onJoin?: () => void
@@ -104,6 +105,7 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
       'Commands:',
       '  help              Show this help',
       '  join              Open membership flow ($29 USDC)',
+      '  provide           Open provider registration',
       '  status            Show cluster status',
       '  connect           Connect wallet',
       '  disconnect        Disconnect wallet',
@@ -178,6 +180,25 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
     if (cmd === 'join') {
       onJoin?.()
       appendLines('Opening JOIN_SCALERS flow...')
+      
+      // Send Discord webhook notification
+      if (isConnected && address && chain) {
+        notifyJoinCommand(address, chain.id).catch(error => {
+          console.warn('Failed to send Discord notification:', error)
+        })
+      }
+      return
+    }
+    if (cmd === 'provide' || cmd === 'provide-compute') {
+      appendLines('Opening PROVIDE_COMPUTE flow...')
+      appendLines('This will open the provider registration process')
+      
+      // Send Discord webhook notification
+      if (isConnected && address && chain) {
+        notifyProvideCommand(address, chain.id).catch(error => {
+          console.warn('Failed to send Discord notification:', error)
+        })
+      }
       return
     }
     if (cmd === 'status') {

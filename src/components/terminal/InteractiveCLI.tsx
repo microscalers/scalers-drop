@@ -192,18 +192,63 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
   }, [connectStatus, connectError, appendLines])
 
   return (
-    <div className="border border-green-900 bg-green-950/30">
-      <div ref={scrollRef} className="h-60 overflow-auto p-4 text-sm text-green-400 font-mono">
+    <div style={{
+      border: "1px solid #00FF99",
+      backgroundColor: "rgba(0, 255, 153, 0.1)",
+      borderRadius: "8px",
+      marginBottom: "1rem",
+      width: "100%",
+      maxWidth: "800px"
+    }}>
+      <div 
+        ref={scrollRef} 
+        style={{
+          height: "240px",
+          overflow: "auto",
+          padding: "1rem",
+          fontSize: "14px",
+          color: "#00FF99",
+          fontFamily: "JetBrains Mono, monospace",
+          lineHeight: "1.4"
+        }}
+      >
         {lines.map(line => (
-          <div key={line.id} className="whitespace-pre-wrap">{line.text}</div>
+          <div key={line.id} style={{ whiteSpace: "pre-wrap", marginBottom: "0.25rem" }}>
+            {line.text}
+          </div>
         ))}
       </div>
-      <form onSubmit={onSubmit} className="flex items-center gap-2 border-t border-green-900 px-3 py-2">
-        <span className="text-green-500 text-xs sm:text-sm">{prompt}$</span>
+      <form 
+        onSubmit={onSubmit} 
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          borderTop: "1px solid #00FF99",
+          padding: "0.75rem",
+          backgroundColor: "rgba(0, 0, 0, 0.3)"
+        }}
+      >
+        <span style={{ 
+          color: "#00FF99", 
+          fontSize: "12px",
+          fontFamily: "JetBrains Mono, monospace",
+          fontWeight: "bold"
+        }}>
+          {prompt}$
+        </span>
         <input
           ref={inputRef}
           aria-label="CLI input"
-          className="flex-1 bg-transparent outline-none text-green-300 placeholder-green-700 text-sm"
+          style={{
+            flex: 1,
+            backgroundColor: "transparent",
+            outline: "none",
+            border: "none",
+            color: "#00FF99",
+            fontFamily: "JetBrains Mono, monospace",
+            fontSize: "14px"
+          }}
           placeholder="type 'help'"
           value={input}
           onChange={(e) => setInput(e.target.value)}

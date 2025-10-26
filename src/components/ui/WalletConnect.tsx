@@ -1,41 +1,36 @@
 'use client'
-import { useState } from 'react'
 import { useWeb3 } from '@/hooks/useWeb3'
 
 export default function WalletConnect() {
-  const { connectWallet, disconnect, address } = useWeb3()
-  const [connecting, setConnecting] = useState(false)
+  const { connectWallet, disconnect, address, ensName, isConnecting } = useWeb3()
 
-  const handleConnect = async () => {
-    setConnecting(true)
-    try {
-      await connectWallet()
-    } finally {
-      setConnecting(false)
-    }
+  // connected view
+  if (address) {
+    const short = `${address.slice(0, 6)}…${address.slice(-4)}`
+    return (
+      <div className="flex items-center gap-2 text-green-400">
+        <span className="text-sm">
+          {ensName ? `${ensName}` : short}
+          <span className="text-green-500 ml-1">(founder)</span>
+        </span>
+        <button
+          onClick={disconnect}
+          className="text-xs border border-green-700 px-2 py-1 hover:bg-green-900"
+        >
+          disconnect
+        </button>
+      </div>
+    )
   }
 
+  // disconnected view
   return (
-    <div className="mt-6 flex flex-col items-center text-green-400 font-mono">
-      {address ? (
-        <>
-          <p className="mb-2 text-xs">Connected: {address.slice(0, 6)}…{address.slice(-4)}</p>
-          <button
-            onClick={() => disconnect()}
-            className="border border-green-500 px-3 py-1 rounded hover:bg-green-600/10"
-          >
-            Disconnect
-          </button>
-        </>
-      ) : (
-        <button
-          onClick={handleConnect}
-          disabled={connecting}
-          className="border border-green-500 px-3 py-1 rounded hover:bg-green-600/10"
-        >
-          {connecting ? 'Connecting…' : 'Connect Wallet'}
-        </button>
-      )}
-    </div>
+    <button
+      onClick={connectWallet}
+      disabled={isConnecting}
+      className="px-3 py-2 border border-green-600 hover:bg-green-900 text-sm"
+    >
+      {isConnecting ? 'connecting…' : 'connect wallet'}
+    </button>
   )
 }

@@ -1,3 +1,4 @@
+const [showPayment, setShowPayment] = useState(false)
 import React, { useState } from 'react'
 import { InteractiveCLI } from './InteractiveCLI'
 import { WalletConnect } from '../wallet/WalletConnect'
@@ -108,7 +109,7 @@ export function TerminalLanding() {
       {showPayment && (
         <div style={{ marginTop: "2rem" }}>
           <WalletConnect />
-          <ScalersPayment />
+          <ScalersPayment onClose={() => setShowPayment(false)} />
         </div>
       )}
 
@@ -125,8 +126,8 @@ export function TerminalLanding() {
       >
         <p>
           $ build-id:{" "}
-          <code>{import.meta.env.VITE_BUILD_ID || "local-dev"}</code> | deployed:{" "}
-          {new Date().toUTCString()}
+          <code>{import.meta.env.VITE_BUILD_ID || "local-dev"}</code> |
+          deployed: {new Date().toUTCString()}
           <br />
           <a
             href="https://microscalers.eth.limo"

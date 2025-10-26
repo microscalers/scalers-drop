@@ -104,11 +104,11 @@ export function TerminalLanding() {
             {'>'} ens_subdomain: join scalers → get username.microscaler.eth
           </p>
         </div>
-      </main>
 
-      {/* Payment modal */}
-      {showPayment && <ScalersPayment onClose={() => setShowPayment(false)} />}
+      {/* Footer Build ID */}
+      <footer className="mt-8 text-green-700 text-xs text-center border-t border-green-900 pt-4">
+        build: {import.meta.env.VITE_COMMIT_HASH || 'local-dev'}
+      </footer>
     </div>
   )
 }
-// rebuild: Sun Oct 26 02:51:45 AM UTC 2025

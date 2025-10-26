@@ -4,4 +4,12 @@ compatibility_date = "2025-10-26"
 workers_dev = true
 
 [vars]
-# optional vars if you want to add analytics or version info
+# Zero Trust JWT Secret (for verification)
+CF_ACCESS_JWT_SECRET = "your_jwt_secret_here"
+# Allowed domains for CORS
+ALLOWED_ORIGINS = "https://microscalers.eth.limo,https://app.microscalers.eth.limo"
+
+# Zero Trust configuration
+[[access]]
+application = "microscalers-api"
+domain = "api.microscalers.ai"

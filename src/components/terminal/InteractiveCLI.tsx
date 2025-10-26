@@ -23,7 +23,15 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
   const [lines, setLines] = useState<CliLine[]>(() => [
     { id: 1, text: 'Microscalers CLI v0.1.0 — type "help"', isTyping: true, displayText: '' },
   ])
-  const [history, setHistory] = useState<string[]>([])
+  const [history, setHistory] = useState<string[]>(() => {
+    // Load history from localStorage on component mount
+    try {
+      const saved = localStorage.getItem("cli-history")
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
   const [historyIdx, setHistoryIdx] = useState<number | null>(null)
   const [isTyping, setIsTyping] = useState(true)
   const nextId = useRef(2)
@@ -103,6 +111,7 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
       '  chain             Print active chain',
       '  switch base       Switch network to Base L2',
       '  clear             Clear screen',
+      '  clear-history     Clear command history',
       '  version           Print CLI version',
     ])
   }, [appendLines])
@@ -144,7 +153,11 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
     const cmd = raw.trim()
     if (!cmd) return
 
-    setHistory(prev => [...prev, cmd])
+    // Add to history with limit (keep last 100 commands)
+    setHistory(prev => {
+      const newHistory = [...prev, cmd]
+      return newHistory.length > 100 ? newHistory.slice(-100) : newHistory
+    })
     setHistoryIdx(null)
     appendLines(`$ ${cmd}`, false) // Don't animate the command input
 
@@ -155,6 +168,11 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
     if (cmd === 'clear') {
       setLines([])
       nextId.current = 1
+      return
+    }
+    if (cmd === 'clear-history') {
+      setHistory([])
+      appendLines('Command history cleared')
       return
     }
     if (cmd === 'join') {
@@ -240,6 +258,15 @@ export const InteractiveCLI = memo(function InteractiveCLI({ onJoin }: Interacti
       appendLines('Wallet connect error')
     }
   }, [connectStatus, connectError, appendLines])
+
+  // Save history to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem("cli-history", JSON.stringify(history))
+    } catch (error) {
+      console.warn("Failed to save CLI history to localStorage:", error)
+    }
+  }, [history])
 
   // Cleanup typing timeout on unmount
   useEffect(() => {

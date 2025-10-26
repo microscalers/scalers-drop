@@ -28,7 +28,46 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
   const terminalRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // Helper function to render colored text
+  const renderColoredText = (text: string) => {
+    // Simple color mapping for terminal-like appearance
+    const colorMap: { [key: string]: string } = {
+      '→': '#00FF99', // Green for arrows
+      'docs.microscalers.eth.limo': '#00FF99',
+      'members.microscalers.eth.limo': '#00FF99', 
+      'dev.microscalers.eth.limo': '#00FF99',
+      'microscalers.eth': '#00FF99',
+      'trusted compute brokerage': '#00FF99',
+      '[ booting microscalers node... ]': '#00CC66',
+      '[ connecting to Base L2... ok ✅ ]': '#00FF99',
+      '[ initializing wagmi... done ]': '#00FF99',
+      'Welcome to Microscalers CLI': '#FFFFFF',
+      'type `help` to begin': '#00FF99'
+    }
+
+    // Check if any special text needs coloring
+    for (const [key, color] of Object.entries(colorMap)) {
+      if (text.includes(key)) {
+        const parts = text.split(key)
+        return (
+          <>
+            {parts[0]}
+            <span style={{ color }}>{key}</span>
+            {parts[1]}
+          </>
+        )
+      }
+    }
+    
+    return text
+  }
+
   const bootLines = [
+    "    /\\_/\\",
+    "   ( -.- )  [accessing blockchain...]",
+    "    > ^ ",
+    " ──────────────────────────",
+    "",
     " __  __ _                 _                          _",
     "|  \\/  (_)_ __ ___  _ __ | | ___  ___ ___  ___  _ __| |_",
     "| |\\/| | | '_ ` _ \\| '_ \\| |/ _ \\/ __/ __|/ _ \\| '__| __|",
@@ -36,6 +75,10 @@ export function InteractiveCLI({ onJoin }: InteractiveCLIProps) {
     "|_|  |_|_|_| |_| |_| .__/|_|\\___||___/___/\\___||_|   \\__|",
     "                   |_|",
     "        microscalers.eth  —  trusted compute brokerage",
+    "",
+    "→ docs.microscalers.eth.limo",
+    "→ members.microscalers.eth.limo", 
+    "→ dev.microscalers.eth.limo",
     "",
     "[ booting microscalers node... ]",
     "[ connecting to Base L2... ok ✅ ]",
@@ -268,7 +311,7 @@ Ready to build! 🚀`
     >
       {history.map((line, i) => (
         <pre key={i} style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-          {line}
+          {renderColoredText(line)}
         </pre>
       ))}
 

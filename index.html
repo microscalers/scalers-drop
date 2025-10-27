@@ -3,51 +3,454 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CAT — trusted compute brokerage</title>
-
-  <!-- Terminal-grade, ASCII-safe styles -->
+  <title>MICROSCALERS.AI — trusted compute brokerage</title>
   <style>
-    :root{
-      --bg:#000;
-      --fg:#00ff66;
-      --fg-dim:#00aa55;
-      --banner:#00ff66;
-      --banner-fg:#000;
+    :root {
+      --bg: #000;
+      --fg: #00ff66;
+      --fg-dim: #00aa55;
+      --banner: #00ff66;
+      --banner-fg: #000;
     }
-    html,body{
-      margin:0; padding:0;
-      background:var(--bg); color:var(--fg);
-      font-family:"JetBrains Mono","Fira Code","Cascadia Mono","Menlo","Consolas",monospace;
-      font-size:15px; line-height:1.1;
-      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .banner{
-      background:var(--banner); color:var(--banner-fg);
-      text-align:center; padding:4px 0; font-weight:700; border-bottom:1px solid var(--banner);
+    
+    html, body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "JetBrains Mono", "Fira Code", "Cascadia Mono", "Menlo", "Consolas", monospace;
+      font-size: 16px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      min-height: 100vh;
     }
-    .box{
-      max-width:920px; margin:2rem auto; padding:2rem;
-      border:1px solid var(--fg); border-radius:12px;
-      box-shadow:0 0 24px rgba(0,255,102,.12);
+    
+    .banner {
+      background: var(--banner);
+      color: var(--banner-fg);
+      text-align: center;
+      padding: 8px 0;
+      font-weight: 700;
+      border-bottom: 1px solid var(--banner);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
     }
-    pre{white-space:pre; margin:0}
-    .ascii{ color:var(--fg); font-size:14px; margin-bottom:1.25rem; }
-    a{ color:var(--fg); text-decoration:none }
-    a:hover{ color:#fff; text-shadow:0 0 6px var(--fg) }
-    .dim{ color:var(--fg-dim) }
-    .ok{ color:var(--fg) }
-    .cli{ margin:.35rem 0 }
-    .cursor{ display:inline-block; width:8px; height:16px; background:var(--fg); animation:blink 1s steps(1) infinite }
-    @keyframes blink{ 50%{opacity:0} }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 80px 20px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .title {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    
+    .subtitle {
+      opacity: 0.8;
+      font-size: 1.1rem;
+    }
+    
+    .cli-container {
+      background: #000;
+      border: 1px solid var(--fg);
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 18px;
+      line-height: 1.6;
+      min-height: 400px;
+      position: relative;
+    }
+    
+    .cli-output {
+      margin-bottom: 1rem;
+      white-space: pre-wrap;
+    }
+    
+    .cli-line {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    
+    .cli-input {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    
+    .prompt {
+      color: var(--fg);
+      margin-right: 8px;
+    }
+    
+    .input-field {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 18px;
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 20px;
+      background: var(--fg);
+      animation: blink 1s steps(1) infinite;
+      margin-left: auto;
+    }
+    
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    
+    .stats {
+      border: 1px solid var(--fg);
+      border-radius: 8px;
+      padding: 1.5rem 2rem;
+      margin: 2rem 0;
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 1.8rem;
+      color: #fff;
+      font-weight: bold;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: var(--fg);
+      color: #000;
+    }
+    
+    .btn-primary:hover {
+      background: #00cc55;
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--fg);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--fg);
+      color: #000;
+    }
+    
+    .footer {
+      margin-top: auto;
+      border-top: 1px solid var(--fg);
+      padding-top: 1rem;
+      text-align: center;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+    
+    .footer a {
+      color: var(--fg);
+      text-decoration: none;
+    }
+    
+    .footer a:hover {
+      color: #fff;
+      text-shadow: 0 0 6px var(--fg);
+    }
+    
+    .ascii-art {
+      color: var(--fg);
+      font-size: 14px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .highlight {
+      color: var(--fg);
+    }
+    
+    .dim {
+      color: var(--fg-dim);
+    }
   </style>
 </head>
 <body>
   <div class="banner">Base L2 Connected • Network: Base • Ready for Transactions</div>
 
-  <!-- React app mount -->
-  <div id="root"></div>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">MICROSCALE<span style="color: #fff">RS.AI</span></h1>
+      <p class="subtitle">industrial-grade gpu infrastructure. ens-verified. base l2 escrow.</p>
+    </div>
 
-  <!-- Keep Vite entry if your app mounts -->
-  <script type="module" src="/src/main.tsx"></script>
+    <div class="cli-container">
+      <div class="ascii-art">
+    /\\_/\\
+   ( -.- )  [accessing blockchain...]
+    > ^ 
+ ──────────────────────────
+
+███╗   ███╗██╗ ██████╗██████╗  ██████╗ ███████╗ █████╗ ██╗     ███████╗██████╗ 
+████╗ ████║██║██╔════╝██╔══██╗██╔═══██╗██╔════╝██╔══██╗██║     ██╔════╝██╔══██╗
+██╔████╔██║██║██║     ██████╔╝██║   ██║███████╗███████║██║     █████╗  ██████╔╝
+██║╚██╔╝██║██║██║     ██╔══██╗██║   ██║╚════██║██╔══██║██║     ██╔══╝  ██╔══██╗
+██║ ╚═╝ ██║██║╚██████╗██║  ██║╚██████╔╝███████║██║  ██║███████╗███████╗██║  ██║
+╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝
+
+        MICROSCALERS.AI  —  trusted compute brokerage
+
+→ docs.microscalers.eth.limo
+→ members.microscalers.eth.limo
+→ dev.microscalers.eth.limo
+
+[ booting microscalers node... ]
+[ connecting to Base L2... ok ✅ ]
+[ initializing wagmi... done ]
+Welcome to Microscalers CLI — type `help` to begin.
+      </div>
+
+      <div class="cli-output" id="cliOutput"></div>
+      
+      <div class="cli-input">
+        <span class="prompt">$ </span>
+        <input type="text" class="input-field" id="cliInput" placeholder="type 'help' to begin" autocomplete="off">
+        <span class="cursor"></span>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-number">32</div>
+        <div class="stat-label">R5090 RIGS</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">265+</div>
+        <div class="stat-label">VERIFIED SCALERS</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">128GB</div>
+        <div class="stat-label">VRAM CLUSTER</div>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn btn-primary" onclick="joinScalers()">JOIN_SCALERS() → $29_USDC</button>
+      <button class="btn btn-secondary" onclick="provideCompute()">PROVIDE_COMPUTE()</button>
+    </div>
+
+    <div class="footer">
+      <p>
+        $ build-id: <code>static-v1.0.0</code> | deployed: <span id="deployTime"></span><br>
+        <a href="https://microscalers.eth.limo" target="_blank" rel="noopener noreferrer">microscalers.eth</a> • 
+        <a href="https://trustcat.eth.limo" target="_blank" rel="noopener noreferrer">trustcat.eth</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Set deploy time
+    document.getElementById('deployTime').textContent = new Date().toUTCString();
+    
+    const cliOutput = document.getElementById('cliOutput');
+    const cliInput = document.getElementById('cliInput');
+    
+    // Simple CLI functionality
+    function addOutput(text, className = '') {
+      const line = document.createElement('div');
+      line.className = 'cli-line ' + className;
+      line.textContent = text;
+      cliOutput.appendChild(line);
+      cliOutput.scrollTop = cliOutput.scrollHeight;
+    }
+    
+    function handleCommand(cmd) {
+      const cleanCmd = cmd.trim().toLowerCase();
+      
+      // Add command to output
+      addOutput('$ ' + cmd, 'highlight');
+      
+      switch (cleanCmd) {
+        case 'help':
+          addOutput(`Available commands:
+help, join, provide, status, connect, disconnect, whoami, chain, switch base, clear, version
+
+Portal commands:
+open docs, open members, open dev, open ens
+
+API commands:
+api, curl, quickstart, api-cli`);
+          break;
+        case 'join':
+          addOutput('→ Opening membership flow ($29 USDC)...', 'highlight');
+          joinScalers();
+          break;
+        case 'provide':
+        case 'provide-compute':
+          addOutput('→ Opening provider registration flow...', 'highlight');
+          provideCompute();
+          break;
+        case 'status':
+          addOutput('Rigs 32 • Scalers 265+ • VRAM 128 GB cluster • Network Base L2');
+          break;
+        case 'connect':
+          addOutput('Connecting wallet … ok ✅', 'highlight');
+          break;
+        case 'disconnect':
+          addOutput('Wallet disconnected.');
+          break;
+        case 'whoami':
+          addOutput('guest@microscalers.eth');
+          break;
+        case 'chain':
+          addOutput('Active chain: Base L2 (id=8453)');
+          break;
+        case 'switch base':
+          addOutput('Switched network → Base L2', 'highlight');
+          break;
+        case 'version':
+          addOutput('Microscalers CLI v1.1.1');
+          break;
+        case 'clear':
+          cliOutput.innerHTML = '';
+          break;
+        case 'open docs':
+          addOutput('Opening docs → https://docs.microscalers.eth.limo', 'highlight');
+          window.open('https://docs.microscalers.eth.limo', '_blank');
+          break;
+        case 'open members':
+          addOutput('Opening members portal → https://members.microscalers.eth.limo', 'highlight');
+          window.open('https://members.microscalers.eth.limo', '_blank');
+          break;
+        case 'open dev':
+          addOutput('Opening dev portal → https://dev.microscalers.eth.limo', 'highlight');
+          window.open('https://dev.microscalers.eth.limo', '_blank');
+          break;
+        case 'open ens':
+          addOutput('Opening microscalers.eth ENS root → https://microscalers.eth.limo', 'highlight');
+          window.open('https://microscalers.eth.limo', '_blank');
+          break;
+        case 'api':
+        case 'curl':
+          addOutput(`Microscalers API Commands:
+
+# Quick start - check cluster status
+curl https://api.microscalers.eth.limo/v1/status
+
+# List available rigs
+curl -X GET https://api.microscalers.eth.limo/v1/rigs
+
+# Request compute (requires auth)
+curl -X POST https://api.microscalers.eth.limo/v1/compute \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{"gpu_type": "RTX5090", "duration": 3600, "memory": "24GB"}'
+
+Ready to integrate with your workflow! 🚀`);
+          break;
+        case 'quickstart':
+          addOutput(`# Copy-paste this into your terminal:
+curl https://api.microscalers.eth.limo/v1/status
+
+# Or with jq for pretty output:
+curl -s https://api.microscalers.eth.limo/v1/status | jq .
+
+Ready to build! 🚀`);
+          break;
+        case 'api-cli':
+          addOutput(`# Microscalers CLI API (Cloudflare Worker):
+curl -s https://api.microscalers.ai/cli?cmd=help
+
+# Available commands:
+curl -s https://api.microscalers.ai/cli?cmd=docs
+curl -s https://api.microscalers.ai/cli?cmd=members
+curl -s https://api.microscalers.ai/cli?cmd=dev
+
+# Works with any terminal or browser!`);
+          break;
+        default:
+          addOutput(`Command not found: ${cmd}`, 'dim');
+      }
+    }
+    
+    // Event listeners
+    cliInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const cmd = this.value;
+        if (cmd.trim()) {
+          handleCommand(cmd);
+          this.value = '';
+        }
+      }
+    });
+    
+    // Focus input on click
+    document.querySelector('.cli-container').addEventListener('click', function() {
+      cliInput.focus();
+    });
+    
+    // Button functions
+    function joinScalers() {
+      alert('JOIN_SCALERS() → $29 USDC\n\nThis would open the membership flow in a real implementation.');
+    }
+    
+    function provideCompute() {
+      alert('PROVIDE_COMPUTE()\n\nThis would open the provider registration flow in a real implementation.');
+    }
+    
+    // Auto-focus input
+    cliInput.focus();
+  </script>
 </body>
 </html>
